@@ -47,12 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container.cs" />
-    <Compile Include="INIParser.cs" />
+    <Compile Include="Ext\Container.cs" />
+    <Compile Include="MyExtension\MyTechnoExt.cs" />
+    <Compile Include="Script\Script.cs" />
+    <Compile Include="Script\Scriptable.cs" />
+    <Compile Include="Utilities\INIParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Script\ScriptManager.cs" />
-    <Compile Include="TechnoExt.cs" />
-    <Compile Include="TechnoTypeExt.cs" />
+    <Compile Include="Ext\TechnoExt.cs" />
+    <Compile Include="Ext\TechnoTypeExt.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YRpp\PatcherYRpp.csproj">
@@ -60,5 +63,6 @@
       <Name>PatcherYRpp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

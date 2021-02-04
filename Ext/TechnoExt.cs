@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Script;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatcherSample
+namespace Extension.Ext
 {
     [Serializable]
     public partial class TechnoExt : Extension<TechnoClass>

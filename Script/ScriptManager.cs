@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Ext;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -10,79 +11,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatcherSample
+namespace Extension.Script
 {
-    public interface IScriptable
-    {
-    }
-    public interface IScriptable<T> : IScriptable
-    {
-        public T Owner { get; }
-    }
-    public class TechnoScriptable : IScriptable<TechnoExt>
-    {
-        public TechnoScriptable(TechnoExt owner)
-        {
-            Owner = owner;
-        }
-
-        public TechnoExt Owner { get; protected set; }
-    }
-
-    public enum ScriptEventType
-    {
-        OnUpdate
-    }
-
-    public class Script
-    {
-        public static readonly List<string> EventNames = new List<string>(Enum.GetNames(typeof(ScriptEventType)));
-        public Script(string name)
-        {
-            Name = name;
-        }
-
-        public MethodInfo GetEvent(string eventName)
-        {
-            return Events[eventName];
-        }
-        public MethodInfo this[string eventName] => GetEvent(eventName);
-        public MethodInfo this[ScriptEventType eventType] => GetEvent(eventType.ToString());
-
-        public void SetEvents(Type type)
-        {
-            ScriptableType = type;
-            foreach (string eventName in EventNames)
-            {
-                MethodInfo method = ScriptableType.GetMethod(eventName);
-                SetEvent(eventName, method);
-            }
-        }
-
-        private void SetEvent(string eventName, MethodInfo method)
-        {
-            if (Events.ContainsKey(eventName))
-            {
-                Events[eventName] = method;
-            }
-            else
-            {
-                Events.Add(eventName, method);
-            }
-        }
-
-        public string Name;
-        public Type ScriptableType;
-        public Dictionary<string, MethodInfo> Events = new Dictionary<string, MethodInfo>();
-    }
-
     public class ScriptManager
     {
         static Dictionary<string, Script> Scripts = new Dictionary<string, Script>();
 
-        static public Script GetScript(string filename)
+        static public TScript GetScript<TScript>(string filename) where TScript : Script
         {
-            Script script = new Script(filename);
+            TScript script = Activator.CreateInstance(typeof(TScript), filename) as TScript;
 
             var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
             Assembly assembly = pair.Value;
@@ -139,9 +76,9 @@ namespace PatcherSample
             Program.Patcher.AssemblyRefresh += Patcher_AssemblyRefresh;
         }
 
-        static public IScriptable<T> GetScriptable<T>(Script script, T owner)
+        static public Scriptable<T> GetScriptable<T>(Script script, T owner)
         {
-            return Activator.CreateInstance(script.ScriptableType, owner) as IScriptable<T>;
+            return Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
         }
 
 

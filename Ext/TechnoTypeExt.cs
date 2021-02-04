@@ -1,4 +1,6 @@
 ﻿using DynamicPatcher;
+using Extension.Script;
+using Extension.Utilities;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -8,14 +10,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatcherSample
+namespace Extension.Ext
 {
     [Serializable]
     public partial class TechnoTypeExt : Extension<TechnoTypeClass>
     {
         public static Container<TechnoTypeExt, TechnoTypeClass> ExtMap = new Container<TechnoTypeExt, TechnoTypeClass>("TechnoTypeClass");
 
-        public Script Script;
+        public TechnoScript Script;
 
         public TechnoTypeExt(Pointer<TechnoTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -31,7 +33,7 @@ namespace PatcherSample
             exINI.Read(section, "Script", ref scriptName);
             if(scriptName != null)
             {
-                Script = ScriptManager.GetScript(scriptName);
+                Script = ScriptManager.GetScript<TechnoScript>(scriptName);
             }
         }
 
