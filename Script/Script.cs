@@ -12,6 +12,7 @@ namespace Extension.Script
         OnUpdate
     }
 
+    [Serializable]
     public class ScriptEvent
     {
         public static readonly List<string> EventNames = new List<string>(Enum.GetNames(typeof(ScriptEventType)));
@@ -34,6 +35,7 @@ namespace Extension.Script
         MethodInfo method;
     }
 
+    [Serializable]
     public abstract class Script
     {
         public string Name { get; protected set; }
@@ -57,6 +59,7 @@ namespace Extension.Script
         protected abstract void SetEvent(string eventName, MethodInfo method);
     }
 
+    [Serializable]
     public class TechnoScript : Script
     {
         public TechnoScript(string name)

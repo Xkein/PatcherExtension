@@ -10,14 +10,24 @@ namespace Extension.Script
     public interface IScriptable
     {
     }
+
+    [Serializable]
     public abstract class Scriptable<T> : IScriptable
     {
         public T Owner { get; protected set; }
+        public Script Script { get; internal set; }
         public Scriptable(T owner)
         {
             Owner = owner;
         }
+
+        public object Invoke(ScriptEventType scriptEventType, params object[] parameters)
+        {
+            return Script[scriptEventType]?.Invoke(this, parameters);
+        }
     }
+
+    [Serializable]
     public class TechnoScriptable : Scriptable<TechnoExt>
     {
         public TechnoScriptable(TechnoExt owner) : base(owner)

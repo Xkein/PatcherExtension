@@ -17,25 +17,25 @@ namespace Extension.Script
     {
         static Dictionary<string, Script> Scripts = new Dictionary<string, Script>();
 
+        // create script or get a exist script
         static public TScript GetScript<TScript>(string filename) where TScript : Script
         {
-            TScript script = Activator.CreateInstance(typeof(TScript), filename) as TScript;
-
-            var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
-            Assembly assembly = pair.Value;
-
-            RefreshScript(script, assembly);
-
             if (Scripts.ContainsKey(filename))
             {
-                Scripts[filename] = script;
+                return Scripts[filename] as TScript;
             }
             else
             {
-                Scripts.Add(filename, script);
-            }
+                TScript script = Activator.CreateInstance(typeof(TScript), filename) as TScript;
 
-            return script;
+                var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
+                Assembly assembly = pair.Value;
+
+                RefreshScript(script, assembly);
+
+                Scripts.Add(filename, script);
+                return script;
+            }
         }
         private static void Patcher_AssemblyRefresh(object sender, AssemblyRefreshEventArgs args)
         {
@@ -78,7 +78,9 @@ namespace Extension.Script
 
         static public Scriptable<T> GetScriptable<T>(Script script, T owner)
         {
-            return Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
+            var scriptable = Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
+            scriptable.Script = script;
+            return scriptable;
         }
 
 
@@ -87,9 +89,8 @@ namespace Extension.Script
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ESI;
             TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
-            TechnoTypeExt extType = ext.Type;
 
-            extType.Script?[ScriptEventType.OnUpdate]?.Invoke(ext.Scriptable, null);
+            ext.Scriptable?.Invoke(ScriptEventType.OnUpdate, null);
 
             return 0;
         }

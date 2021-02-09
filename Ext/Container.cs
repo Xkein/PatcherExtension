@@ -23,8 +23,11 @@ namespace Extension.Ext
     [Serializable]
     public class Extension<T>
     {
-        public Pointer<T> OwnerObject { get; set; }
+        [NonSerialized]
+        private Pointer<T> ownerObject;
+        public Pointer<T> OwnerObject { get => ownerObject; set => ownerObject = value; }
         InitState Initialized;
+
         public Extension(Pointer<T> ownerObject)
         {
             OwnerObject = ownerObject;
@@ -88,6 +91,9 @@ namespace Extension.Ext
 
         // load any ini file: rules, game mode, scenario or map
         protected virtual void LoadFromINIFile(Pointer<CCINIClass> pINI) { }
+
+        public virtual void LoadFromStream(IStream stream) { }
+        public virtual void SaveToStream(IStream stream) { }
     }
 
     public class Container<TExt, TBase> where TExt : Extension<TBase>
@@ -169,7 +175,7 @@ namespace Extension.Ext
 
         public void PrepareStream(Pointer<TBase> key, IStream pStm)
         {
-            Logger.Log("[PrepareStream] Next is {0:X} of type '{1}'\n", key, Name);
+            Logger.Log("[PrepareStream] Next is {0:X} of type '{1}'\n", (int)key, Name);
 
             SavingObject = key;
             SavingStream = pStm;
@@ -188,7 +194,7 @@ namespace Extension.Ext
             }
             else
             {
-                Logger.Log("[SaveStatic] Object or Stream not set for '{0:X}': {1}, {2}\n", Name, (int)SavingObject, SavingStream);
+                Logger.Log("[SaveStatic] Object or Stream not set for '{0}': {1:X}, {2}\n", Name, (int)SavingObject, SavingStream);
             }
 
             SavingObject = Pointer<TBase>.Zero;
@@ -199,7 +205,7 @@ namespace Extension.Ext
         {
             if (SavingObject.IsNull == false && SavingStream != null)
             {
-                Logger.Log("[LoadStatic] Loading object {0:X} as '%s'\n", (int)SavingObject, Name);
+                Logger.Log("[LoadStatic] Loading object {0:X} as '{1}'\n", (int)SavingObject, Name);
 
                 if (!Load(SavingObject, SavingStream))
                 {
@@ -208,7 +214,7 @@ namespace Extension.Ext
             }
             else
             {
-                Logger.Log("[LoadStatic] Object or Stream not set for '{0:X}': {1}, {2}\n", Name, (int)SavingObject, SavingStream);
+                Logger.Log("[LoadStatic] Object or Stream not set for '{0}': {1:X}, {2}\n", Name, (int)SavingObject, SavingStream);
             }
 
             SavingObject = Pointer<TBase>.Zero;
@@ -235,8 +241,8 @@ namespace Extension.Ext
             {
                 return null;
             }
-            var val = Find(key);
-            //Logger.Log("\tKey maps to {0:X}\n", val);
+            TExt val = Find(key);
+
             if (val != null)
             {
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -246,10 +252,10 @@ namespace Extension.Ext
                 byte[] buffer = memory.ToArray();
                 pStm.Write(BitConverter.GetBytes(buffer.Length), sizeof(int), Pointer<ulong>.AsPointer(ref written));
                 pStm.Write(buffer, buffer.Length, Pointer<ulong>.AsPointer(ref written));
-                //			Debug::Log("Save used up 0x%X bytes (HRESULT 0x%X)\n", out, res);
+
+                val.SaveToStream(pStm);
             }
 
-            //Debug::Log("\n\n");
             return val;
         }
 
@@ -262,7 +268,7 @@ namespace Extension.Ext
                 Logger.Log("Load attempted for a NULL pointer! WTF!\n");
                 return null;
             }
-            var val = FindOrAllocate(key);
+            //TExt val = FindOrAllocate(key);
 
             byte[] buffer = new byte[4];
             pStm.Read(buffer, sizeof(int), Pointer<ulong>.AsPointer(ref written));
@@ -271,7 +277,23 @@ namespace Extension.Ext
 
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream memory = new MemoryStream(buffer);
-            formatter.Deserialize(memory);
+            TExt val = formatter.Deserialize(memory) as TExt;
+
+            val.OwnerObject = key;
+            val.EnsureConstanted();
+
+            if (Items.ContainsKey(key))
+            {
+                //Logger.Log("LoadKey: use old key\n");
+                Items[key] = val;
+            }
+            else
+            {
+                //Logger.Log("LoadKey: add new key\n");
+                Items.Add(key, val);
+            }
+
+            val.LoadFromStream(pStm);
 
             return val;
         }
