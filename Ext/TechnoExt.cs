@@ -16,27 +16,26 @@ namespace Extension.Ext
     {
         public static Container<TechnoExt, TechnoClass> ExtMap = new Container<TechnoExt, TechnoClass>("TechnoClass");
 
-        // Lazy<TechnoScriptable> scriptable;
-        internal TechnoScriptable scriptable;
+        internal Lazy<TechnoScriptable> scriptable;
         public TechnoScriptable Scriptable
         {
             get
             {
-                if (scriptable == null)
+                if (Type.Script != null)
                 {
-                    if (Type.Script != null)
-                    {
-                        scriptable = ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable;
-                    }
+                    return scriptable.Value;
                 }
-                return scriptable;
+                return null;
             }
         }
 
-        public TechnoTypeExt Type { get => TechnoTypeExt.ExtMap.Find(OwnerObject.Ref.Type); }
+        Lazy<TechnoTypeExt> type;
+        public TechnoTypeExt Type { get => type.Value; }
 
         public TechnoExt(Pointer<TechnoClass> OwnerObject) : base(OwnerObject)
         {
+            type = new Lazy<TechnoTypeExt>(() => TechnoTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
+            scriptable = new Lazy<TechnoScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable);
         }
 
         //[Hook(HookType.AresHook, Address = 0x6F3260, Size = 5)]

@@ -28,7 +28,7 @@ namespace Extension.Ext
         protected override void LoadFromINIFile(Pointer<CCINIClass> pINI)
         {
             INI_EX exINI = new INI_EX(pINI);
-            string section = OwnerObject.Ref.Base.GetID();
+            string section = OwnerObject.Ref.Base.Base.GetID();
 
             string scriptName = null;
             exINI.Read(section, "Script", ref scriptName);
