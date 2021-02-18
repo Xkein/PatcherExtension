@@ -44,15 +44,30 @@ namespace Extension.Script
                 RefreshScript(Scripts[args.FileName], args.RefreshedAssembly);
 
                 // [warning!] unsafe change to scriptable
-                ref var technoArray = ref TechnoClass.Array;
-                for (int i = 0; i < technoArray.Count; i++)
+                unsafe
                 {
-                    Pointer<TechnoClass> pTechno = technoArray[i];
-                    TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
-                    if(ext.Scriptable != null)
+                    ref var technoArray = ref TechnoClass.Array;
+                    for (int i = 0; i < technoArray.Count; i++)
                     {
-                        TechnoTypeExt extType = ext.Type;
-                        ext.scriptable = GetScriptable(extType.Script, ext) as TechnoScriptable;
+                        var pItem = technoArray[i];
+                        var ext = TechnoExt.ExtMap.Find(pItem);
+                        if (ext.Scriptable != null)
+                        {
+                            var extType = ext.Type;
+                            ext.scriptable = new Lazy<TechnoScriptable>(() => GetScriptable(extType.Script, ext) as TechnoScriptable);
+                        }
+                    }
+
+                    ref var bulletArray = ref BulletClass.Array;
+                    for (int i = 0; i < bulletArray.Count; i++)
+                    {
+                        var pItem = bulletArray[i];
+                        var ext = BulletExt.ExtMap.Find(pItem);
+                        if (ext.Scriptable != null)
+                        {
+                            var extType = ext.Type;
+                            ext.scriptable = new Lazy<BulletScriptable>(() => GetScriptable(extType.Script, ext) as BulletScriptable);
+                        }
                     }
                 }
             }
@@ -89,6 +104,17 @@ namespace Extension.Script
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ESI;
             TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
+
+            ext.Scriptable?.Invoke(ScriptEventType.OnUpdate, null);
+
+            return 0;
+        }
+
+        //[Hook(HookType.AresHook, Address = 0x4666F7, Size = 6)]
+        static public unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
+        {
+            Pointer<BulletClass> pBullet = (IntPtr)R->EBP;
+            BulletExt ext = BulletExt.ExtMap.Find(pBullet);
 
             ext.Scriptable?.Invoke(ScriptEventType.OnUpdate, null);
 

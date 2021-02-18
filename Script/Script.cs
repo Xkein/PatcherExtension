@@ -85,4 +85,31 @@ namespace Extension.Script
             }
         }
     }
+
+    [Serializable]
+    public class BulletScript : Script
+    {
+        public BulletScript(string name)
+        {
+            Name = name;
+            Events = new Dictionary<string, ScriptEvent>();
+        }
+
+        public override ScriptEvent GetEvent(string eventName)
+        {
+            return Events[eventName];
+        }
+
+        protected override void SetEvent(string eventName, MethodInfo method)
+        {
+            if (Events.ContainsKey(eventName))
+            {
+                Events[eventName].ResetMethod(method);
+            }
+            else
+            {
+                Events.Add(eventName, new ScriptEvent(method));
+            }
+        }
+    }
 }

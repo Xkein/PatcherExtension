@@ -34,4 +34,12 @@ namespace Extension.Script
         {
         }
     }
+
+    [Serializable]
+    public class BulletScriptable : Scriptable<BulletExt>
+    {
+        public BulletScriptable(BulletExt owner) : base(owner)
+        {
+        }
+    }
 }

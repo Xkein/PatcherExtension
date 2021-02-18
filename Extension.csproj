@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ext\BulletExt.cs" />
+    <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
     <Compile Include="Script\Script.cs" />
