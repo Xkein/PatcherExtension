@@ -9,14 +9,17 @@ namespace Extension.Script
 {
     public enum ScriptEventType
     {
-        OnUpdate
+        // Common
+        OnUpdate, OnDestroy, OnPut,
+        // Object
+        OnHurt,
+        // Techno
+        OnFire
     }
 
     [Serializable]
     public class ScriptEvent
     {
-        public static readonly List<string> EventNames = new List<string>(Enum.GetNames(typeof(ScriptEventType)));
-
         public ScriptEvent(MethodInfo methodInfo)
         {
             method = methodInfo;
@@ -42,21 +45,32 @@ namespace Extension.Script
         public Type ScriptableType { get; protected set; }
         public IDictionary<string, ScriptEvent> Events { get; protected set; }
 
-        public abstract ScriptEvent GetEvent(string eventName);
+        public virtual ScriptEvent GetEvent(string eventName) => Events[eventName];
         public ScriptEvent this[string eventName] => GetEvent(eventName);
         public ScriptEvent this[ScriptEventType eventType] => GetEvent(eventType.ToString());
 
+        public virtual IEnumerable<string> EventNames { get; }
         public void SetEvents(Type type)
         {
             ScriptableType = type;
-            foreach (string eventName in ScriptEvent.EventNames)
+            foreach (string eventName in EventNames)
             {
                 MethodInfo method = ScriptableType.GetMethod(eventName);
                 SetEvent(eventName, method);
             }
         }
 
-        protected abstract void SetEvent(string eventName, MethodInfo method);
+        protected virtual void SetEvent(string eventName, MethodInfo method)
+        {
+            if (Events.ContainsKey(eventName))
+            {
+                Events[eventName].ResetMethod(method);
+            }
+            else
+            {
+                Events.Add(eventName, new ScriptEvent(method));
+            }
+        }
     }
 
     [Serializable]
@@ -68,22 +82,12 @@ namespace Extension.Script
             Events = new Dictionary<string, ScriptEvent>();
         }
 
-        public override ScriptEvent GetEvent(string eventName)
-        {
-            return Events[eventName];
-        }
-
-        protected override void SetEvent(string eventName, MethodInfo method)
-        {
-            if (Events.ContainsKey(eventName))
-            {
-                Events[eventName].ResetMethod(method);
-            }
-            else
-            {
-                Events.Add(eventName, new ScriptEvent(method));
-            }
-        }
+        static readonly List<string> eventNames = new ScriptEventType[] {
+            ScriptEventType.OnUpdate, ScriptEventType.OnDestroy, ScriptEventType.OnPut,
+            ScriptEventType.OnHurt,
+            ScriptEventType.OnFire
+        }.Select(type => type.ToString()).ToList();
+        public override IEnumerable<string> EventNames => eventNames;
     }
 
     [Serializable]
@@ -95,21 +99,9 @@ namespace Extension.Script
             Events = new Dictionary<string, ScriptEvent>();
         }
 
-        public override ScriptEvent GetEvent(string eventName)
-        {
-            return Events[eventName];
-        }
-
-        protected override void SetEvent(string eventName, MethodInfo method)
-        {
-            if (Events.ContainsKey(eventName))
-            {
-                Events[eventName].ResetMethod(method);
-            }
-            else
-            {
-                Events.Add(eventName, new ScriptEvent(method));
-            }
-        }
+        static readonly List<string> eventNames = new ScriptEventType[] {
+            ScriptEventType.OnUpdate, ScriptEventType.OnDestroy, ScriptEventType.OnPut,
+        }.Select(type => type.ToString()).ToList();
+        public override IEnumerable<string> EventNames => eventNames;
     }
 }

@@ -37,6 +37,28 @@ namespace Extension.Script
                 return script;
             }
         }
+
+        static public Scriptable<T> GetScriptable<T>(Script script, T owner)
+        {
+            var scriptable = Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
+            scriptable.Script = script;
+            return scriptable;
+        }
+
+        private static void RefreshScript(Script script, Assembly assembly)
+        {
+            Type[] types = assembly.GetTypes();
+            foreach (Type type in types)
+            {
+                if (typeof(IScriptable).IsAssignableFrom(type))
+                {
+                    script.SetEvents(type);
+                    break;
+                }
+            }
+        }
+
+
         private static void Patcher_AssemblyRefresh(object sender, AssemblyRefreshEventArgs args)
         {
             if (Scripts.ContainsKey(args.FileName))
@@ -73,29 +95,9 @@ namespace Extension.Script
             }
         }
 
-        private static void RefreshScript(Script script, Assembly assembly)
-        {
-            Type[] types = assembly.GetTypes();
-            foreach (Type type in types)
-            {
-                if (typeof(IScriptable).IsAssignableFrom(type))
-                {
-                    script.SetEvents(type);
-                    break;
-                }
-            }
-        }
-
         static ScriptManager()
         {
             Program.Patcher.AssemblyRefresh += Patcher_AssemblyRefresh;
-        }
-
-        static public Scriptable<T> GetScriptable<T>(Script script, T owner)
-        {
-            var scriptable = Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
-            scriptable.Script = script;
-            return scriptable;
         }
 
 
