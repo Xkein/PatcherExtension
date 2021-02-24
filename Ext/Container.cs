@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Utilities;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,7 @@ namespace Extension.Ext
                         LoadFromRulesFile(pINI);
                     }
                     LoadFromINIFile(pINI);
+                    this.LoadINIConfig(pINI);
                     Initialized = InitState.Completed;
                     break;
             }

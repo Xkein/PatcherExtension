@@ -47,12 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ext\AnimTypeExt.cs" />
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
     <Compile Include="Script\Script.cs" />
     <Compile Include="Script\Scriptable.cs" />
+    <Compile Include="Utilities\INIReader.cs" />
+    <Compile Include="Utilities\PartialHelper.cs" />
     <Compile Include="Utilities\INIParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Script\ScriptManager.cs" />

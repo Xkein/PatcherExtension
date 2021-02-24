@@ -26,12 +26,11 @@ namespace Extension.Ext
 
         protected override void LoadFromINIFile(Pointer<CCINIClass> pINI)
         {
-            INI_EX exINI = new INI_EX(pINI);
+            INIReader reader = new INIReader(pINI);
             string section = OwnerObject.Ref.Base.Base.GetID();
 
-            string scriptName = null;
-            exINI.Read(section, "Script", ref scriptName);
-            if (scriptName != null)
+            string scriptName = reader.ReadNormal<string>(section, "Script");
+            if (string.IsNullOrEmpty(scriptName) == false)
             {
                 Script = ScriptManager.GetScript<BulletScript>(scriptName);
             }
