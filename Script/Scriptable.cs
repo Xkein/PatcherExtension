@@ -1,4 +1,5 @@
 ﻿using Extension.Ext;
+using PatcherYRpp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,9 @@ namespace Extension.Script
     public abstract class Scriptable<T> : IScriptable
     {
         public T Owner { get; protected set; }
-        public Script Script { get; internal set; }
         public Scriptable(T owner)
         {
             Owner = owner;
-        }
-
-        // this is slow, so use virtual function later
-        public object Invoke(ScriptEventType scriptEventType, params object[] parameters)
-        {
-            return Script[scriptEventType]?.Invoke(this, parameters);
         }
     }
 
@@ -34,6 +28,9 @@ namespace Extension.Script
         public TechnoScriptable(TechnoExt owner) : base(owner)
         {
         }
+
+        public virtual void OnUpdate() { }
+        public virtual void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex) { }
     }
 
     [Serializable]
@@ -42,5 +39,7 @@ namespace Extension.Script
         public BulletScriptable(BulletExt owner) : base(owner)
         {
         }
+
+        public virtual void OnUpdate() { }
     }
 }

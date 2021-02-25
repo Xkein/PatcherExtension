@@ -40,8 +40,12 @@ namespace Extension.Script
 
         static public Scriptable<T> GetScriptable<T>(Script script, T owner)
         {
-            var scriptable = Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
-            scriptable.Script = script;
+            return GetScriptable(script.ScriptableType, owner);
+        }
+
+        static public Scriptable<T> GetScriptable<T>(Type scriptableType, T owner)
+        {
+            var scriptable = Activator.CreateInstance(scriptableType, owner) as Scriptable<T>;
             return scriptable;
         }
 
@@ -107,7 +111,7 @@ namespace Extension.Script
             Pointer<TechnoClass> pTechno = (IntPtr)R->ESI;
             TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
 
-            ext.Scriptable?.Invoke(ScriptEventType.OnUpdate, null);
+            ext.Scriptable?.OnUpdate();
 
             return 0;
         }
@@ -119,7 +123,7 @@ namespace Extension.Script
             var pTarget = R->Stack<Pointer<AbstractClass>>(0x4);
             var nWeaponIndex = R->Stack<int>(0x8);
 
-            ext.Scriptable?.Invoke(ScriptEventType.OnFire, pTarget, nWeaponIndex);
+            ext.Scriptable?.OnFire(pTarget, nWeaponIndex);
 
             return 0;
         }
@@ -130,7 +134,7 @@ namespace Extension.Script
             Pointer<BulletClass> pBullet = (IntPtr)R->EBP;
             BulletExt ext = BulletExt.ExtMap.Find(pBullet);
 
-            ext.Scriptable?.Invoke(ScriptEventType.OnUpdate, null);
+            ext.Scriptable?.OnUpdate();
 
             return 0;
         }
