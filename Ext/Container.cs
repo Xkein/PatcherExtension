@@ -73,7 +73,7 @@ namespace Extension.Ext
                         LoadFromRulesFile(pINI);
                     }
                     LoadFromINIFile(pINI);
-                    this.LoadINIConfig(pINI);
+                    this.PartialLoadINIConfig(pINI);
                     Initialized = InitState.Completed;
                     break;
             }
@@ -177,7 +177,7 @@ namespace Extension.Ext
 
         public void PrepareStream(Pointer<TBase> key, IStream pStm)
         {
-            Logger.Log("[PrepareStream] Next is {0:X} of type '{1}'\n", (int)key, Name);
+            //Logger.Log("[PrepareStream] Next is {0:X} of type '{1}'\n", (int)key, Name);
 
             SavingObject = key;
             SavingStream = pStm;
@@ -187,7 +187,7 @@ namespace Extension.Ext
         {
             if (SavingObject.IsNull == false && SavingStream != null)
             {
-                Logger.Log("[SaveStatic] Saving object {0:X} as '{1}'\n", (int)SavingObject, Name);
+                //Logger.Log("[SaveStatic] Saving object {0:X} as '{1}'\n", (int)SavingObject, Name);
 
                 if (!Save(SavingObject, SavingStream))
                 {
@@ -207,7 +207,7 @@ namespace Extension.Ext
         {
             if (SavingObject.IsNull == false && SavingStream != null)
             {
-                Logger.Log("[LoadStatic] Loading object {0:X} as '{1}'\n", (int)SavingObject, Name);
+                //Logger.Log("[LoadStatic] Loading object {0:X} as '{1}'\n", (int)SavingObject, Name);
 
                 if (!Load(SavingObject, SavingStream))
                 {
@@ -256,6 +256,7 @@ namespace Extension.Ext
                 pStm.Write(buffer, buffer.Length, Pointer<ulong>.AsPointer(ref written));
 
                 val.SaveToStream(pStm);
+                val.PartialSaveToStream(pStm);
             }
 
             return val;
@@ -296,6 +297,7 @@ namespace Extension.Ext
             }
 
             val.LoadFromStream(pStm);
+            val.PartialLoadFromStream(pStm);
 
             return val;
         }
