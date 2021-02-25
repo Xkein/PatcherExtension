@@ -40,7 +40,7 @@ namespace Extension.Script
 
         static public Scriptable<T> GetScriptable<T>(Script script, T owner)
         {
-            return GetScriptable(script.ScriptableType, owner);
+            return script != null ? GetScriptable(script.ScriptableType, owner) : null;
         }
 
         static public Scriptable<T> GetScriptable<T>(Type scriptableType, T owner)
