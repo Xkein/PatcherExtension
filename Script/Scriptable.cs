@@ -21,6 +21,7 @@ namespace Extension.Script
             Owner = owner;
         }
 
+        // this is slow, so use virtual function later
         public object Invoke(ScriptEventType scriptEventType, params object[] parameters)
         {
             return Script[scriptEventType]?.Invoke(this, parameters);

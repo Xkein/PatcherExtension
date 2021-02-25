@@ -111,6 +111,18 @@ namespace Extension.Script
 
             return 0;
         }
+        //[Hook(HookType.AresHook, Address = 0x6FDD50, Size = 6)]
+        static public unsafe UInt32 TechnoClass_Fire_Script(REGISTERS* R)
+        {
+            Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
+            var pTarget = R->Stack<Pointer<AbstractClass>>(0x4);
+            var nWeaponIndex = R->Stack<int>(0x8);
+
+            ext.Scriptable?.Invoke(ScriptEventType.OnFire, pTarget, nWeaponIndex);
+
+            return 0;
+        }
 
         //[Hook(HookType.AresHook, Address = 0x4666F7, Size = 6)]
         static public unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
