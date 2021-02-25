@@ -41,17 +41,20 @@ namespace Extension.Utilities
         //    }
         //}
 
-        public T ReadNormal<T>(string section, string key)
+        public bool ReadNormal<T>(string section, string key, ref T buffer)
         {
-            T buffer = default;
-            parser.Read(section, key, ref buffer);
-            return buffer;
+            return parser.Read(section, key, ref buffer);
         }
 
-        public Pointer<SuperWeaponTypeClass> ReadSuperWeapon(string section, string key)
+        public bool ReadSuperWeapon(string section, string key, ref Pointer<SuperWeaponTypeClass> buffer)
         {
-            string val = ReadNormal<string>(section, key);
-            return SuperWeaponTypeClass.ABSTRACTTYPE_ARRAY.Find(val);
+            string val = default;
+            if(ReadNormal(section, key, ref val))
+            {
+                buffer = SuperWeaponTypeClass.ABSTRACTTYPE_ARRAY.Find(val);
+                return true;
+            }
+            return false;
         }
     }
 }

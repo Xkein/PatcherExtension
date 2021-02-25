@@ -29,7 +29,8 @@ namespace Extension.Ext
             INIReader reader = new INIReader(pINI);
             string section = OwnerObject.Ref.Base.Base.GetID();
 
-            string scriptName = reader.ReadNormal<string>(section, "Script");
+            string scriptName = default;
+            reader.ReadNormal(section, "Script", ref scriptName);
             if (string.IsNullOrEmpty(scriptName) == false)
             {
                 Script = ScriptManager.GetScript<BulletScript>(scriptName);
