@@ -104,7 +104,7 @@ namespace Extension.Script
             Program.Patcher.AssemblyRefresh += Patcher_AssemblyRefresh;
         }
 
-
+        #region TechnoScript
         //[Hook(HookType.AresHook, Address = 0x6F9E50, Size = 5)]
         static public unsafe UInt32 TechnoClass_Update_Script(REGISTERS* R)
         {
@@ -127,7 +127,9 @@ namespace Extension.Script
 
             return 0;
         }
+        #endregion
 
+        #region BulletScript
         //[Hook(HookType.AresHook, Address = 0x4666F7, Size = 6)]
         static public unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
         {
@@ -138,5 +140,6 @@ namespace Extension.Script
 
             return 0;
         }
+        #endregion
     }
 }
