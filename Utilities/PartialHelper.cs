@@ -49,7 +49,7 @@ namespace Extension.Utilities
             foreach (var iniLoadAction in iniLoadActions)
             {
                 MethodInfo method = type.GetMethod(iniLoadAction.Name);
-                method.Invoke(ext, new object[] { pINI });
+                method?.Invoke(ext, new object[] { pINI });
             }
         }
         public static void PartialSaveToStream<T>(this Extension<T> ext, IStream stream)
@@ -59,7 +59,7 @@ namespace Extension.Utilities
             foreach (var saveAction in saveActions)
             {
                 MethodInfo method = type.GetMethod(saveAction.Name);
-                method.Invoke(ext, new object[] { stream });
+                method?.Invoke(ext, new object[] { stream });
             }
         }
         public static void PartialLoadFromStream<T>(this Extension<T> ext, IStream stream)
@@ -69,7 +69,7 @@ namespace Extension.Utilities
             foreach (var loadAction in loadActions)
             {
                 MethodInfo method = type.GetMethod(loadAction.Name);
-                method.Invoke(ext, new object[] { stream });
+                method?.Invoke(ext, new object[] { stream });
             }
         }
     }
