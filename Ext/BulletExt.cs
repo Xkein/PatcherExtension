@@ -21,7 +21,7 @@ namespace Extension.Ext
         {
             get
             {
-                if (Type.Script != null)
+                if (scriptable.IsValueCreated || Type.Script != null)
                 {
                     return scriptable.Value;
                 }
@@ -29,13 +29,35 @@ namespace Extension.Ext
             }
         }
 
+        [NonSerialized]
         Lazy<BulletTypeExt> type;
-        public BulletTypeExt Type { get => type.Value; }
+        public BulletTypeExt Type
+        {
+            get
+            {
+                if (type == null)
+                {
+                    type = new Lazy<BulletTypeExt>(() => BulletTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
+                }
+                return type.Value;
+            }
+        }
 
         public BulletExt(Pointer<BulletClass> OwnerObject) : base(OwnerObject)
         {
-            type = new Lazy<BulletTypeExt>(() => BulletTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
             scriptable = new Lazy<BulletScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as BulletScriptable);
+        }
+
+        public override void SaveToStream(IStream stream)
+        {
+            base.SaveToStream(stream);
+            Scriptable?.Save(stream);
+        }
+
+        public override void LoadFromStream(IStream stream)
+        {
+            base.LoadFromStream(stream);
+            Scriptable?.Load(stream);
         }
 
         //[Hook(HookType.AresHook, Address = 0x4664BA, Size = 5)]

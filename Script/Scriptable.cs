@@ -1,8 +1,9 @@
-﻿using Extension.Ext;
+using Extension.Ext;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,8 @@ namespace Extension.Script
         {
             Owner = owner;
         }
+        public virtual void Save(IStream stream) { }
+        public virtual void Load(IStream stream) { }
     }
 
     [Serializable]

@@ -21,7 +21,7 @@ namespace Extension.Ext
         {
             get
             {
-                if (Type.Script != null)
+                if (scriptable.IsValueCreated || Type.Script != null)
                 {
                     return scriptable.Value;
                 }
@@ -29,13 +29,35 @@ namespace Extension.Ext
             }
         }
 
+        [NonSerialized]
         Lazy<TechnoTypeExt> type;
-        public TechnoTypeExt Type { get => type.Value; }
+        public TechnoTypeExt Type
+        {
+            get
+            {
+                if (type == null)
+                {
+                    type = new Lazy<TechnoTypeExt>(() => TechnoTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
+                }
+                return type.Value;
+            }
+        }
 
         public TechnoExt(Pointer<TechnoClass> OwnerObject) : base(OwnerObject)
         {
-            type = new Lazy<TechnoTypeExt>(() => TechnoTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
             scriptable = new Lazy<TechnoScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable);
+        }
+
+        public override void SaveToStream(IStream stream)
+        {
+            base.SaveToStream(stream);
+            Scriptable?.Save(stream);
+        }
+
+        public override void LoadFromStream(IStream stream)
+        {
+            base.LoadFromStream(stream);
+            Scriptable?.Load(stream);
         }
 
         //[Hook(HookType.AresHook, Address = 0x6F3260, Size = 5)]

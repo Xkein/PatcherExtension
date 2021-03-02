@@ -237,8 +237,6 @@ namespace Extension.Ext
 
         protected TExt SaveKey(Pointer<TBase> key, IStream pStm)
         {
-            ulong written = 0;
-
             if (key.IsNull)
             {
                 return null;
@@ -252,8 +250,8 @@ namespace Extension.Ext
                 formatter.Serialize(memory, val);
 
                 byte[] buffer = memory.ToArray();
-                pStm.Write(BitConverter.GetBytes(buffer.Length), sizeof(int), Pointer<ulong>.AsPointer(ref written));
-                pStm.Write(buffer, buffer.Length, Pointer<ulong>.AsPointer(ref written));
+                pStm.Write(buffer.Length);
+                pStm.Write(buffer);
 
                 val.SaveToStream(pStm);
                 val.PartialSaveToStream(pStm);
@@ -264,8 +262,6 @@ namespace Extension.Ext
 
         protected TExt LoadKey(Pointer<TBase> key, IStream pStm)
         {
-            ulong written = 0;
-
             if (key.IsNull)
             {
                 Logger.Log("Load attempted for a NULL pointer! WTF!\n");
@@ -273,10 +269,10 @@ namespace Extension.Ext
             }
             //TExt val = FindOrAllocate(key);
 
-            byte[] buffer = new byte[4];
-            pStm.Read(buffer, sizeof(int), Pointer<ulong>.AsPointer(ref written));
-            buffer = new byte[BitConverter.ToInt32(buffer, 0)];
-            pStm.Read(buffer, buffer.Length, Pointer<ulong>.AsPointer(ref written));
+            int length = 0;
+            pStm.Read(ref length);
+            byte[] buffer = new byte[length];
+            pStm.Read(buffer);
 
             BinaryFormatter formatter = new BinaryFormatter();
             MemoryStream memory = new MemoryStream(buffer);
