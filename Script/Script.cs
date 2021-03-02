@@ -10,9 +10,9 @@ namespace Extension.Script
     public enum ScriptEventType
     {
         // Common
-        OnUpdate, OnDestroy, OnPut,
+        OnUpdate, OnRemove, OnPut,
         // Object
-        OnHurt,
+        OnReceiveDamage,
         // Techno
         OnFire
     }
@@ -83,8 +83,8 @@ namespace Extension.Script
         }
 
         static readonly List<string> eventNames = new ScriptEventType[] {
-            ScriptEventType.OnUpdate, ScriptEventType.OnDestroy, ScriptEventType.OnPut,
-            ScriptEventType.OnHurt,
+            ScriptEventType.OnUpdate, ScriptEventType.OnRemove, ScriptEventType.OnPut,
+            ScriptEventType.OnReceiveDamage,
             ScriptEventType.OnFire
         }.Select(type => type.ToString()).ToList();
         public override IEnumerable<string> EventNames => eventNames;
@@ -100,7 +100,7 @@ namespace Extension.Script
         }
 
         static readonly List<string> eventNames = new ScriptEventType[] {
-            ScriptEventType.OnUpdate, ScriptEventType.OnDestroy, ScriptEventType.OnPut,
+            ScriptEventType.OnUpdate, ScriptEventType.OnRemove, ScriptEventType.OnPut,
         }.Select(type => type.ToString()).ToList();
         public override IEnumerable<string> EventNames => eventNames;
     }

@@ -1,4 +1,4 @@
-using Extension.Ext;
+﻿using Extension.Ext;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -33,6 +33,11 @@ namespace Extension.Script
         }
 
         public virtual void OnUpdate() { }
+        public virtual void OnPut(CoordStruct coord, int faceDir) { }
+        public virtual void OnRemove() { }
+        public virtual void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+            Pointer<ObjectClass> Attacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse) { }
+
         public virtual void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex) { }
     }
 
@@ -44,5 +49,7 @@ namespace Extension.Script
         }
 
         public virtual void OnUpdate() { }
+        public virtual void OnPut(CoordStruct coord, int faceDir) { }
+        public virtual void OnRemove() { }
     }
 }
