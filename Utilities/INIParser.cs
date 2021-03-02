@@ -9,10 +9,17 @@ namespace Extension.Utilities
 {
     class Parser<T>
     {
-        public static int Parse(byte[] buffer, ref T outValue)
+        private static string GetString(byte[] buffer)
         {
             string str = Encoding.UTF8.GetString(buffer);
-            str = str.Trim('\0').Trim();
+            str = str.Substring(0, str.IndexOf('\0'));
+            str = str.Trim();
+
+            return str;
+        }
+        public static int Parse(byte[] buffer, ref T outValue)
+        {
+            string str = GetString(buffer);
 
             if (string.IsNullOrEmpty(str))
             {
@@ -29,8 +36,7 @@ namespace Extension.Utilities
 
         public static int Parse(byte[] buffer, ref T[] outValue)
         {
-            string str = Encoding.UTF8.GetString(buffer);
-            str = str.Trim('\0').Trim();
+            string str = GetString(buffer);
 
             string[] strs = str.Split(',');
             for (int i = 0; i < strs.Length; i++)
