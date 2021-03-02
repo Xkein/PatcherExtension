@@ -1,4 +1,5 @@
-﻿using PatcherYRpp;
+﻿using Extension.Script;
+using PatcherYRpp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,17 @@ namespace Extension.Utilities
             if(ReadNormal(section, key, ref val))
             {
                 buffer = SuperWeaponTypeClass.ABSTRACTTYPE_ARRAY.Find(val);
+                return true;
+            }
+            return false;
+        }
+
+        public bool ReadScript<TScript>(string section, string key, ref TScript buffer) where TScript : Script.Script
+        {
+            string val = default;
+            if (ReadNormal(section, key, ref val))
+            {
+                buffer = ScriptManager.GetScript<TScript>(val);
                 return true;
             }
             return false;

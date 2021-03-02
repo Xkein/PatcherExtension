@@ -31,12 +31,7 @@ namespace Extension.Ext
             INIReader reader = new INIReader(exINI);
             string section = OwnerObject.Ref.Base.Base.GetID();
 
-            string scriptName = default;
-            reader.ReadNormal(section, "Script", ref scriptName);
-            if(string.IsNullOrEmpty(scriptName) == false)
-            {
-                Script = ScriptManager.GetScript<TechnoScript>(scriptName);
-            }
+            reader.ReadScript(section, "Script", ref Script);
         }
 
         //[Hook(HookType.AresHook, Address = 0x711835, Size = 5)]
