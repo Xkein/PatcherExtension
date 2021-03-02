@@ -39,6 +39,7 @@ namespace Extension.Script
                 }
                 catch (Exception e)
                 {
+                    Logger.Log("ScriptManager could not find script: {0}", filename);
                     Helpers.PrintException(e);
                     return null;
                 }
