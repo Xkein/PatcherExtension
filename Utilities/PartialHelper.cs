@@ -48,7 +48,7 @@ namespace Extension.Utilities
             INILoadActionAttribute[] iniLoadActions = type.GetCustomAttributes(typeof(INILoadActionAttribute), false) as INILoadActionAttribute[];
             foreach (var iniLoadAction in iniLoadActions)
             {
-                MethodInfo method = type.GetMethod(iniLoadAction.Name);
+                MethodInfo method = type.GetMethod(iniLoadAction.Name, new Type[] { typeof(Pointer<CCINIClass>) });
                 method?.Invoke(ext, new object[] { pINI });
             }
         }
@@ -58,7 +58,7 @@ namespace Extension.Utilities
             SaveActionAttribute[] saveActions = type.GetCustomAttributes(typeof(SaveActionAttribute), false) as SaveActionAttribute[];
             foreach (var saveAction in saveActions)
             {
-                MethodInfo method = type.GetMethod(saveAction.Name);
+                MethodInfo method = type.GetMethod(saveAction.Name, new Type[] { typeof(IStream) });
                 method?.Invoke(ext, new object[] { stream });
             }
         }
@@ -68,7 +68,7 @@ namespace Extension.Utilities
             LoadActionAttribute[] loadActions = type.GetCustomAttributes(typeof(LoadActionAttribute), false) as LoadActionAttribute[];
             foreach (var loadAction in loadActions)
             {
-                MethodInfo method = type.GetMethod(loadAction.Name);
+                MethodInfo method = type.GetMethod(loadAction.Name, new Type[] { typeof(IStream) });
                 method?.Invoke(ext, new object[] { stream });
             }
         }
