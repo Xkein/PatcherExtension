@@ -27,14 +27,21 @@ namespace Extension.Script
             else
             {
                 TScript script = Activator.CreateInstance(typeof(TScript), filename) as TScript;
+                try
+                {
+                    var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
+                    Assembly assembly = pair.Value;
 
-                var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
-                Assembly assembly = pair.Value;
+                    RefreshScript(script, assembly);
 
-                RefreshScript(script, assembly);
-
-                Scripts.Add(filename, script);
-                return script;
+                    Scripts.Add(filename, script);
+                    return script;
+                }
+                catch (Exception e)
+                {
+                    Helpers.PrintException(e);
+                    return null;
+                }
             }
         }
 
