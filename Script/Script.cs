@@ -9,10 +9,8 @@ namespace Extension.Script
 {
     public enum ScriptEventType
     {
-        // Common
-        OnUpdate, OnRemove, OnPut,
         // Object
-        OnReceiveDamage,
+        OnUpdate, OnRemove, OnPut, OnReceiveDamage,
         // Techno
         OnFire
     }
@@ -62,9 +60,9 @@ namespace Extension.Script
 
         protected virtual void SetEvent(string eventName, MethodInfo method)
         {
-            if (Events.ContainsKey(eventName))
+            if (Events.TryGetValue(eventName, out ScriptEvent scriptEvent))
             {
-                Events[eventName].ResetMethod(method);
+                scriptEvent.ResetMethod(method);
             }
             else
             {

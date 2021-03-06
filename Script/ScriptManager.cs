@@ -20,22 +20,22 @@ namespace Extension.Script
         // create script or get a exist script
         static public TScript GetScript<TScript>(string filename) where TScript : Script
         {
-            if (Scripts.ContainsKey(filename))
+            if (Scripts.TryGetValue(filename, out Script script))
             {
-                return Scripts[filename] as TScript;
+                return script as TScript;
             }
             else
             {
-                TScript script = Activator.CreateInstance(typeof(TScript), filename) as TScript;
+                TScript newScript = Activator.CreateInstance(typeof(TScript), filename) as TScript;
                 try
                 {
                     var pair = Program.Patcher.FileAssembly.First((pair) => Path.GetFileNameWithoutExtension(pair.Key) == filename);
                     Assembly assembly = pair.Value;
 
-                    RefreshScript(script, assembly);
+                    RefreshScript(newScript, assembly);
 
-                    Scripts.Add(filename, script);
-                    return script;
+                    Scripts.Add(filename, newScript);
+                    return newScript;
                 }
                 catch (Exception e)
                 {
@@ -73,9 +73,9 @@ namespace Extension.Script
 
         private static void Patcher_AssemblyRefresh(object sender, AssemblyRefreshEventArgs args)
         {
-            if (Scripts.ContainsKey(args.FileName))
+            if (Scripts.TryGetValue(args.FileName, out Script script))
             {
-                RefreshScript(Scripts[args.FileName], args.RefreshedAssembly);
+                RefreshScript(script, args.RefreshedAssembly);
 
                 // [warning!] unsafe change to scriptable
                 unsafe
@@ -117,9 +117,48 @@ namespace Extension.Script
         static public unsafe UInt32 TechnoClass_Update_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ESI;
-            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
 
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
             ext.Scriptable?.OnUpdate();
+
+            return 0;
+        }
+        //[Hook(HookType.AresHook, Address = 0x6F6CA0, Size = 7)]
+        static public unsafe UInt32 TechnoClass_Put_Script(REGISTERS* R)
+        {
+            Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
+            var pCoord = R->Stack<Pointer<CoordStruct>>(0x4);
+            var faceDir = R->Stack<int>(0x8);
+
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
+            ext.Scriptable?.OnPut(pCoord.Data, faceDir);
+
+            return 0;
+        }
+        //[Hook(HookType.AresHook, Address = 0x6F6AC0, Size = 5)]
+        static public unsafe UInt32 TechnoClass_Remove_Script(REGISTERS* R)
+        {
+            Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
+
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
+            ext.Scriptable?.OnRemove();
+
+            return 0;
+        }
+        //[Hook(HookType.AresHook, Address = 0x701900, Size = 6)]
+        static public unsafe UInt32 TechnoClass_ReceiveDamage_Script(REGISTERS* R)
+        {
+            Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
+            var pDamage = R->Stack<Pointer<int>>(0x4);
+            var distanceFromEpicenter = R->Stack<int>(0x8);
+            var pWH = R->Stack<Pointer<WarheadTypeClass>>(0xC);
+            var pAttacker = R->Stack<Pointer<ObjectClass>>(0x10);
+            var ignoreDefenses = R->Stack<bool>(0x14);
+            var preventPassengerEscape = R->Stack<bool>(0x18);
+            var pAttackingHouse = R->Stack<Pointer<HouseClass>>(0x1C);
+
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
+            ext.Scriptable?.OnReceiveDamage(pDamage.Data, distanceFromEpicenter, pWH, pAttacker, ignoreDefenses, preventPassengerEscape, pAttackingHouse);
 
             return 0;
         }
@@ -127,10 +166,10 @@ namespace Extension.Script
         static public unsafe UInt32 TechnoClass_Fire_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
-            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
             var pTarget = R->Stack<Pointer<AbstractClass>>(0x4);
             var nWeaponIndex = R->Stack<int>(0x8);
 
+            TechnoExt ext = TechnoExt.ExtMap.Find(pTechno);
             ext.Scriptable?.OnFire(pTarget, nWeaponIndex);
 
             return 0;
@@ -142,8 +181,8 @@ namespace Extension.Script
         static public unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
         {
             Pointer<BulletClass> pBullet = (IntPtr)R->EBP;
-            BulletExt ext = BulletExt.ExtMap.Find(pBullet);
 
+            BulletExt ext = BulletExt.ExtMap.Find(pBullet);
             ext.Scriptable?.OnUpdate();
 
             return 0;

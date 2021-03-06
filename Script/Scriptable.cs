@@ -9,7 +9,28 @@ using System.Threading.Tasks;
 
 namespace Extension.Script
 {
-    public interface IScriptable
+    public interface IReloadable
+    {
+        public void Save(IStream stream);
+        public void Load(IStream stream);
+    }
+    public interface IAbstractScriptable
+    {
+        public void OnUpdate();
+    }
+    public interface IObjectScriptable : IAbstractScriptable
+    {
+        public void OnPut(CoordStruct coord, int faceDir);
+        public void OnRemove();
+        public void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+            Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse);
+    }
+    public interface ITechnoScriptable : IObjectScriptable
+    {
+        public void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex);
+    }
+
+    public interface IScriptable : IReloadable
     {
     }
 
@@ -26,7 +47,7 @@ namespace Extension.Script
     }
 
     [Serializable]
-    public class TechnoScriptable : Scriptable<TechnoExt>
+    public class TechnoScriptable : Scriptable<TechnoExt>, ITechnoScriptable
     {
         public TechnoScriptable(TechnoExt owner) : base(owner)
         {
@@ -36,13 +57,14 @@ namespace Extension.Script
         public virtual void OnPut(CoordStruct coord, int faceDir) { }
         public virtual void OnRemove() { }
         public virtual void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
-            Pointer<ObjectClass> Attacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse) { }
+            Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
+        { }
 
         public virtual void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex) { }
     }
 
     [Serializable]
-    public class BulletScriptable : Scriptable<BulletExt>
+    public class BulletScriptable : Scriptable<BulletExt>, IObjectScriptable
     {
         public BulletScriptable(BulletExt owner) : base(owner)
         {
@@ -51,5 +73,8 @@ namespace Extension.Script
         public virtual void OnUpdate() { }
         public virtual void OnPut(CoordStruct coord, int faceDir) { }
         public virtual void OnRemove() { }
+        public virtual void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+            Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
+        { }
     }
 }
