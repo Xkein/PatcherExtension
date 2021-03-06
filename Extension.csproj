@@ -55,6 +55,7 @@
     <Compile Include="Script\Script.cs" />
     <Compile Include="Script\Scriptable.cs" />
     <Compile Include="Utilities\ContainerHelper.cs" />
+    <Compile Include="Utilities\ExtensionReference.cs" />
     <Compile Include="Utilities\INIReader.cs" />
     <Compile Include="Utilities\PartialHelper.cs" />
     <Compile Include="Utilities\INIParser.cs" />

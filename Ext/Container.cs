@@ -21,8 +21,12 @@ namespace Extension.Ext
         Completed = 0x4 // INI has been read and values set
     };
 
+    public interface IExtension
+    {
+        IntPtr OwnerObject { get; }
+    }
     [Serializable]
-    public class Extension<T>
+    public class Extension<T> : IExtension
     {
         [NonSerialized]
         private Pointer<T> ownerObject;
@@ -36,6 +40,10 @@ namespace Extension.Ext
         }
 
         ~Extension() { }
+
+        public bool Expired => OwnerObject.IsNull;
+
+        IntPtr IExtension.OwnerObject => OwnerObject;
 
         public void EnsureConstanted()
         {
@@ -137,15 +145,21 @@ namespace Extension.Ext
 
         public TExt Find(Pointer<TBase> key)
         {
-            if (Items.ContainsKey(key))
+            if (Items.TryGetValue(key, out TExt ext))
             {
-                return Items[key];
+                return ext;
             }
             return null;
         }
 
+        private void Expire(TExt ext)
+        {
+            ext.OwnerObject = Pointer<TBase>.Zero;
+        }
+
         public void Remove(Pointer<TBase> key)
         {
+            Expire(Items[key]);
             Items.Remove(key);
         }
 
