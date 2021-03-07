@@ -14,15 +14,13 @@ namespace Extension.Ext
         public string MyExtensionTest = nameof(MyExtensionTest);
     }
 
-    [INILoadAction("LoadINI")]
-    [SaveAction("Save")]
-    [LoadAction("Load")]
     public partial class TechnoTypeExt
     {
         [NonSerialized]
         public PointerHandle<SuperWeaponTypeClass> FireSuperWeapon = new PointerHandle<SuperWeaponTypeClass>();
 
 
+        [INILoadAction]
         public void LoadINI(Pointer<CCINIClass> pINI)
         {
             INIReader reader = new INIReader(pINI);
@@ -31,10 +29,12 @@ namespace Extension.Ext
             reader.ReadSuperWeapon(section, nameof(FireSuperWeapon), ref FireSuperWeapon.Pointer);
         }
 
+        [LoadAction]
         public void Load(IStream stream)
         {
             this.Load(stream, ref FireSuperWeapon);
         }
+        [SaveAction]
         public void Save(IStream stream)
         {
             this.Save(stream, FireSuperWeapon);
