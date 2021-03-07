@@ -15,7 +15,6 @@ namespace Extension.Script
         OnFire
     }
 
-    [Serializable]
     public class ScriptEvent
     {
         public ScriptEvent(MethodInfo methodInfo)
@@ -36,7 +35,6 @@ namespace Extension.Script
         MethodInfo method;
     }
 
-    [Serializable]
     public abstract class Script
     {
         public string Name { get; protected set; }
@@ -71,7 +69,6 @@ namespace Extension.Script
         }
     }
 
-    [Serializable]
     public class TechnoScript : Script
     {
         public TechnoScript(string name)
@@ -88,7 +85,6 @@ namespace Extension.Script
         public override IEnumerable<string> EventNames => eventNames;
     }
 
-    [Serializable]
     public class BulletScript : Script
     {
         public BulletScript(string name)
