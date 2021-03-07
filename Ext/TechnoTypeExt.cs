@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,9 @@ namespace Extension.Ext
     {
         public static Container<TechnoTypeExt, TechnoTypeClass> ExtMap = new Container<TechnoTypeExt, TechnoTypeClass>("TechnoTypeClass");
 
+        [NonSerialized]
         public TechnoScript Script;
+        string scriptName;
 
         public TechnoTypeExt(Pointer<TechnoTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -32,6 +35,13 @@ namespace Extension.Ext
             string section = OwnerObject.Ref.Base.Base.GetID();
 
             reader.ReadScript(section, "Script", ref Script);
+            scriptName = Script?.Name;
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context)
+        {
+            Script = ScriptManager.GetScript<TechnoScript>(scriptName);
         }
 
         //[Hook(HookType.AresHook, Address = 0x711835, Size = 5)]

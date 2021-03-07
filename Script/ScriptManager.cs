@@ -20,6 +20,9 @@ namespace Extension.Script
         // create script or get a exist script
         static public TScript GetScript<TScript>(string filename) where TScript : Script
         {
+            if(filename == null)
+                return null; 
+
             if (Scripts.TryGetValue(filename, out Script script))
             {
                 return script as TScript;

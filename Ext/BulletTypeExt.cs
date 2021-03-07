@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,9 @@ namespace Extension.Ext
     {
         public static Container<BulletTypeExt, BulletTypeClass> ExtMap = new Container<BulletTypeExt, BulletTypeClass>("BulletTypeClass");
 
+        [NonSerialized]
         public BulletScript Script;
+        string scriptName;
 
         public BulletTypeExt(Pointer<BulletTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -30,6 +33,13 @@ namespace Extension.Ext
             string section = OwnerObject.Ref.Base.Base.GetID();
 
             reader.ReadScript(section, "Script", ref Script);
+            scriptName = Script?.Name;
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context)
+        {
+            Script = ScriptManager.GetScript<BulletScript>(scriptName);
         }
 
         //[Hook(HookType.AresHook, Address = 0x46BDD9, Size = 5)]
