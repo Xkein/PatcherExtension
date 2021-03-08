@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,8 +27,9 @@ namespace Extension.Ext
     {
         IntPtr OwnerObject { get; }
     }
+
     [Serializable]
-    public class Extension<T> : IExtension
+    public abstract class Extension<T> : IExtension, IReloadable/*, ISerializable*/, IDeserializationCallback
     {
         [NonSerialized]
         private Pointer<T> ownerObject;
@@ -44,6 +47,25 @@ namespace Extension.Ext
         public bool Expired => OwnerObject.IsNull;
 
         IntPtr IExtension.OwnerObject => OwnerObject;
+
+        //[SecurityPermission(SecurityAction.LinkDemand,
+        //    Flags = SecurityPermissionFlag.SerializationFormatter)]
+        //public virtual void GetObjectData(SerializationInfo info, StreamingContext context) { }
+        //protected Extension(SerializationInfo info, StreamingContext context) { }
+
+        public virtual void OnDeserialization(object sender) { }
+
+        //[OnSerializing]
+        //protected void OnSerializing(StreamingContext context) { }
+
+        //[OnSerialized]
+        //protected void OnSerialized(StreamingContext context) { }
+
+        //[OnDeserializing]
+        //protected void OnDeserializing(StreamingContext context) { }
+
+        //[OnDeserialized]
+        //protected void OnDeserialized(StreamingContext context) { }
 
         public void EnsureConstanted()
         {
@@ -105,8 +127,12 @@ namespace Extension.Ext
         public virtual void LoadFromStream(IStream stream) { }
         public virtual void SaveToStream(IStream stream) { }
     }
+    public interface IContainer
+    {
+        public IExtension Find(IntPtr key);
+    }
 
-    public class Container<TExt, TBase> where TExt : Extension<TBase>
+    public class Container<TExt, TBase> : IContainer where TExt : Extension<TBase>
     {
         Dictionary<Pointer<TBase>, TExt> Items;
 
@@ -150,6 +176,11 @@ namespace Extension.Ext
                 return ext;
             }
             return null;
+        }
+
+        IExtension IContainer.Find(IntPtr key)
+        {
+            return this.Find(key);
         }
 
         private void Expire(TExt ext)
@@ -259,13 +290,7 @@ namespace Extension.Ext
 
             if (val != null)
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                MemoryStream memory = new MemoryStream();
-                formatter.Serialize(memory, val);
-
-                byte[] buffer = memory.ToArray();
-                pStm.Write(buffer.Length);
-                pStm.Write(buffer);
+                pStm.WriteObject(val);
 
                 val.SaveToStream(pStm);
                 val.PartialSaveToStream(pStm);
@@ -283,28 +308,12 @@ namespace Extension.Ext
             }
             //TExt val = FindOrAllocate(key);
 
-            int length = 0;
-            pStm.Read(ref length);
-            byte[] buffer = new byte[length];
-            pStm.Read(buffer);
-
-            BinaryFormatter formatter = new BinaryFormatter();
-            MemoryStream memory = new MemoryStream(buffer);
-            TExt val = formatter.Deserialize(memory) as TExt;
+            pStm.ReadObject(out TExt val);
 
             val.OwnerObject = key;
             val.EnsureConstanted();
 
-            if (Items.ContainsKey(key))
-            {
-                //Logger.Log("LoadKey: use old key\n");
-                Items[key] = val;
-            }
-            else
-            {
-                //Logger.Log("LoadKey: add new key\n");
-                Items.Add(key, val);
-            }
+            Items[key] = val;
 
             val.LoadFromStream(pStm);
             val.PartialLoadFromStream(pStm);

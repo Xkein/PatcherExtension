@@ -1,4 +1,5 @@
 ﻿using Extension.Ext;
+using Extension.Utilities;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,6 @@ using System.Threading.Tasks;
 
 namespace Extension.Script
 {
-    public interface IReloadable
-    {
-        public void Save(IStream stream);
-        public void Load(IStream stream);
-    }
     public interface IAbstractScriptable
     {
         public void OnUpdate();
@@ -42,8 +38,8 @@ namespace Extension.Script
         {
             Owner = owner;
         }
-        public virtual void Save(IStream stream) { }
-        public virtual void Load(IStream stream) { }
+        public virtual void SaveToStream(IStream stream) { }
+        public virtual void LoadFromStream(IStream stream) { }
     }
 
     [Serializable]

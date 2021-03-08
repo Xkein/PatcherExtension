@@ -1,11 +1,13 @@
 ﻿using DynamicPatcher;
 using Extension.Script;
+using Extension.Utilities;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,17 +31,17 @@ namespace Extension.Ext
             }
         }
 
-        [NonSerialized]
-        Lazy<TechnoTypeExt> type;
+        ExtensionReference<TechnoTypeExt> type;
         public TechnoTypeExt Type
         {
             get
             {
-                if (type == null)
+                if (type.TryGet(out TechnoTypeExt ext) == false)
                 {
-                    type = new Lazy<TechnoTypeExt>(() => TechnoTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
+                    type.Set(OwnerObject.Ref.Type);
+                    ext = type.Get();
                 }
-                return type.Value;
+                return ext;
             }
         }
 
@@ -48,16 +50,33 @@ namespace Extension.Ext
             scriptable = new Lazy<TechnoScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable);
         }
 
+        public override void OnDeserialization(object sender)
+        {
+            base.OnDeserialization(sender);
+        }
+
+        [OnSerializing]
+        protected void OnSerializing(StreamingContext context) { }
+
+        [OnSerialized]
+        protected void OnSerialized(StreamingContext context) { }
+
+        [OnDeserializing]
+        protected void OnDeserializing(StreamingContext context) { }
+
+        [OnDeserialized]
+        protected void OnDeserialized(StreamingContext context) { }
+
         public override void SaveToStream(IStream stream)
         {
             base.SaveToStream(stream);
-            Scriptable?.Save(stream);
+            Scriptable?.SaveToStream(stream);
         }
 
         public override void LoadFromStream(IStream stream)
         {
             base.LoadFromStream(stream);
-            Scriptable?.Load(stream);
+            Scriptable?.LoadFromStream(stream);
         }
 
         //[Hook(HookType.AresHook, Address = 0x6F3260, Size = 5)]

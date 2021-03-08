@@ -21,7 +21,6 @@ namespace Extension.Ext
 
         [NonSerialized]
         public TechnoScript Script;
-        string scriptName;
 
         public TechnoTypeExt(Pointer<TechnoTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -35,14 +34,33 @@ namespace Extension.Ext
             string section = OwnerObject.Ref.Base.Base.GetID();
 
             reader.ReadScript(section, "Script", ref Script);
-            scriptName = Script?.Name;
         }
 
-        [OnDeserialized]
-        public void OnDeserialized(StreamingContext context)
+        public override void SaveToStream(IStream stream)
         {
+            base.SaveToStream(stream);
+
+            stream.WriteObject(Script?.Name);
+        }
+        public override void LoadFromStream(IStream stream)
+        {
+            base.LoadFromStream(stream);
+
+            stream.ReadObject(out string scriptName);
             Script = ScriptManager.GetScript<TechnoScript>(scriptName);
         }
+
+        //public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        //{
+        //    base.GetObjectData(info, context);
+
+        //    info.AddValue("ScriptName", Script?.Name);
+        //}
+        //protected TechnoTypeExt(SerializationInfo info, StreamingContext context) : base(info, context)
+        //{
+        //    string scriptName = info.GetString("ScriptName");
+        //    Script = ScriptManager.GetScript<TechnoScript>(scriptName);
+        //}
 
         //[Hook(HookType.AresHook, Address = 0x711835, Size = 5)]
         static public unsafe UInt32 TechnoTypeClass_CTOR(REGISTERS* R)

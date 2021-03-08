@@ -20,7 +20,6 @@ namespace Extension.Ext
 
         [NonSerialized]
         public BulletScript Script;
-        string scriptName;
 
         public BulletTypeExt(Pointer<BulletTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -33,12 +32,19 @@ namespace Extension.Ext
             string section = OwnerObject.Ref.Base.Base.GetID();
 
             reader.ReadScript(section, "Script", ref Script);
-            scriptName = Script?.Name;
         }
 
-        [OnDeserialized]
-        public void OnDeserialized(StreamingContext context)
+        public override void SaveToStream(IStream stream)
         {
+            base.SaveToStream(stream);
+
+            stream.WriteObject(Script?.Name);
+        }
+        public override void LoadFromStream(IStream stream)
+        {
+            base.LoadFromStream(stream);
+
+            stream.ReadObject(out string scriptName);
             Script = ScriptManager.GetScript<BulletScript>(scriptName);
         }
 

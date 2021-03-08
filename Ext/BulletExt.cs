@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,13 +52,13 @@ namespace Extension.Ext
         public override void SaveToStream(IStream stream)
         {
             base.SaveToStream(stream);
-            Scriptable?.Save(stream);
+            Scriptable?.SaveToStream(stream);
         }
 
         public override void LoadFromStream(IStream stream)
         {
             base.LoadFromStream(stream);
-            Scriptable?.Load(stream);
+            Scriptable?.LoadFromStream(stream);
         }
 
         //[Hook(HookType.AresHook, Address = 0x4664BA, Size = 5)]
