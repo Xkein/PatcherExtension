@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Utilities
 {
-    class INIReader
+    public class INIReader
     {
         INI_EX parser;
 

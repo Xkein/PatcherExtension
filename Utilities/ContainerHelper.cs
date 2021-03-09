@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Utilities
 {
-    static class ContainerHelper
+    public static class ContainerHelper
     {
         public static uint Write(this IStream stream, byte[] buffer)
         {

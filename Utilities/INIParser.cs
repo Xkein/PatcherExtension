@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Utilities
 {
-    class Parser<T>
+    public class Parser<T>
     {
         private static string GetString(byte[] buffer)
         {
@@ -148,7 +148,7 @@ namespace Extension.Utilities
         }
     }
 
-    class INI_EX
+    public class INI_EX
     {
         Pointer<CCINIClass> IniFile;
         static byte[] readBuffer = new byte[2048];

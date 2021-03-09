@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Utilities
 {
-    static class Serialization
+    public static class Serialization
     {
         public static BinaryFormatter formatter;
 
