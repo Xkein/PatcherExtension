@@ -1,5 +1,6 @@
 ﻿using DynamicPatcher;
 using Extension.Script;
+using Extension.Utilities;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -30,17 +31,17 @@ namespace Extension.Ext
             }
         }
 
-        [NonSerialized]
-        Lazy<BulletTypeExt> type;
+        ExtensionReference<BulletTypeExt> type;
         public BulletTypeExt Type
         {
             get
             {
-                if (type == null)
+                if (type.TryGet(out BulletTypeExt ext) == false)
                 {
-                    type = new Lazy<BulletTypeExt>(() => BulletTypeExt.ExtMap.Find(OwnerObject.Ref.Type));
+                    type.Set(OwnerObject.Ref.Type);
+                    ext = type.Get();
                 }
-                return type.Value;
+                return ext;
             }
         }
 
