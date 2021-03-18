@@ -16,8 +16,7 @@ namespace Extension.Ext
 
     public partial class TechnoTypeExt
     {
-        [NonSerialized]
-        public PointerHandle<SuperWeaponTypeClass> FireSuperWeapon = new PointerHandle<SuperWeaponTypeClass>();
+        public SwizzleablePointer<SuperWeaponTypeClass> FireSuperWeapon = new SwizzleablePointer<SuperWeaponTypeClass>(IntPtr.Zero);
 
 
         [INILoadAction]
@@ -32,12 +31,10 @@ namespace Extension.Ext
         [LoadAction]
         public void Load(IStream stream)
         {
-            this.Load(stream, ref FireSuperWeapon);
         }
         [SaveAction]
         public void Save(IStream stream)
         {
-            this.Save(stream, FireSuperWeapon);
         }
     }
 }
