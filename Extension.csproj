@@ -65,6 +65,7 @@
     <Compile Include="Ext\TechnoExt.cs" />
     <Compile Include="Ext\TechnoTypeExt.cs" />
     <Compile Include="Utilities\Serialization.cs" />
+    <Compile Include="Utilities\SwizzleablePointer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YRpp\PatcherYRpp.csproj">
