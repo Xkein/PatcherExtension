@@ -18,7 +18,7 @@ namespace Extension.Script
     {
         public void OnPut(CoordStruct coord, Direction faceDir);
         public void OnRemove();
-        public void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+        public void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
             Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse);
     }
     public interface ITechnoScriptable : IObjectScriptable
@@ -52,7 +52,7 @@ namespace Extension.Script
         public virtual void OnUpdate() { }
         public virtual void OnPut(CoordStruct coord, Direction faceDir) { }
         public virtual void OnRemove() { }
-        public virtual void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+        public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
             Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
         { }
 
@@ -69,7 +69,7 @@ namespace Extension.Script
         public virtual void OnUpdate() { }
         public virtual void OnPut(CoordStruct coord, Direction faceDir) { }
         public virtual void OnRemove() { }
-        public virtual void OnReceiveDamage(int Damage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
+        public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
             Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
         { }
     }
