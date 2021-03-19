@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Decorators;
 using Extension.Script;
 using Extension.Utilities;
 using PatcherYRpp;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace Extension.Ext
 {
     [Serializable]
-    public partial class TechnoExt : Extension<TechnoClass>
+    public partial class TechnoExt : Extension<TechnoClass>, IDecorative, IDecorative<EventDecorator>, IDecorative<PairDecorator>
     {
         public static Container<TechnoExt, TechnoClass> ExtMap = new Container<TechnoExt, TechnoClass>("TechnoClass");
 
@@ -49,6 +50,25 @@ namespace Extension.Ext
         {
             scriptable = new Lazy<TechnoScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable);
         }
+
+        DecoratorMap decoratorMap = new DecoratorMap();
+
+        public TDecorator CreateDecorator<TDecorator>(DecoratorId id, string description, params object[] parameters) where TDecorator : Decorator
+        {
+            TDecorator decorator = decoratorMap.CreateDecorator<TDecorator>(id, description, parameters);
+            decorator.Decorative = this;
+            return decorator;
+        }
+
+        public Decorator Get(DecoratorId id) => decoratorMap.Get(id);
+
+        public void Remove(DecoratorId id) => decoratorMap.Remove(id);
+
+        public void Remove(Decorator decorator) => decoratorMap.Remove(decorator);
+
+        IEnumerable<EventDecorator> IDecorative<EventDecorator>.GetDecorators() => decoratorMap.GetEventDecorators();
+
+        IEnumerable<PairDecorator> IDecorative<PairDecorator>.GetDecorators() => decoratorMap.GetPairDecorators();
 
         public override void OnDeserialization(object sender)
         {

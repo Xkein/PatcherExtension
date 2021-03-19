@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decorators\DecoratorId.cs" />
+    <Compile Include="Decorators\DecoratorMap.cs" />
+    <Compile Include="Decorators\IDecorative.cs" />
+    <Compile Include="Decorators\TechnoDecorative.cs" />
     <Compile Include="Ext\AnimTypeExt.cs" />
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
@@ -57,6 +61,7 @@
     <Compile Include="Script\Scriptable.cs" />
     <Compile Include="Script\TechnoScripts.cs" />
     <Compile Include="Utilities\ContainerHelper.cs" />
+    <Compile Include="Decorators\Decorator.cs" />
     <Compile Include="Utilities\ExtensionReference.cs" />
     <Compile Include="Utilities\INIReader.cs" />
     <Compile Include="Utilities\IReloadable.cs" />
