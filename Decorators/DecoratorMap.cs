@@ -8,51 +8,92 @@ namespace Extension.Decorators
 {
     class DecoratorMap
     {
+        public DecoratorMap()
+        {
+            dictionary = new Dictionary<DecoratorId, Decorator>();
+
+            pairs = new EnumerableBuffer<PairDecorator>(this);
+            events = new EnumerableBuffer<EventDecorator>(this);
+        }
+
         public TDecorator CreateDecorator<TDecorator>(DecoratorId id, string description, params object[] parameters) where TDecorator : Decorator
         {
             var decorator = Activator.CreateInstance(typeof(TDecorator), parameters) as TDecorator;
             decorator.Description = description;
             decorator.ID = id;
 
-            map.Add(id, decorator);
+            this.Add(decorator);
 
             return decorator;
         }
 
         public Decorator Get(DecoratorId id)
         {
-            if (map.TryGetValue(id, out Decorator decorator))
+            if (this.TryGet(id, out Decorator decorator))
             {
                 return decorator;
             }
             return null;
         }
 
+        public bool TryGet(DecoratorId id, out Decorator decorator)
+        {
+            return dictionary.TryGetValue(id, out decorator);
+        }
+
+        public void Add(Decorator decorator)
+        {
+            dictionary.Add(decorator.ID, decorator);
+            NotifyChanged();
+        }
+
         public void Remove(Decorator decorator)
         {
-            map.Remove(decorator.ID);
+            dictionary.Remove(decorator.ID);
+            NotifyChanged();
         }
 
         public void Remove(DecoratorId id)
         {
-            Decorator decorator = Get(id);
+            Decorator decorator = this.Get(id);
             if (decorator != null)
             {
-                Remove(decorator);
+                this.Remove(decorator);
             }
         }
 
-        public IEnumerable<PairDecorator> GetPairDecorators()
+        private Action NotifyChanged;
+
+        public IEnumerable<PairDecorator> GetPairDecorators() => pairs.Get();
+        public IEnumerable<EventDecorator> GetEventDecorators() => events.Get();
+
+        Dictionary<DecoratorId, Decorator> dictionary;
+
+        // convenient to remove when enumerating
+        class EnumerableBuffer<TDecorator> where TDecorator : Decorator
         {
-            return map.Values.Where(d => d is PairDecorator).Select(d => d as PairDecorator).ToArray();
-        }
-        public IEnumerable<EventDecorator> GetEventDecorators()
-        {
-            return map.Values.Where(d => d is EventDecorator).Select(d => d as EventDecorator).ToArray();
+            DecoratorMap map;
+            List<TDecorator> list;
+            public bool hasChanged = true;
+
+            public EnumerableBuffer(DecoratorMap map)
+            {
+                this.map = map;
+                map.NotifyChanged += () => hasChanged = true;
+            }
+
+            public IEnumerable<TDecorator> Get()
+            {
+                if (hasChanged)
+                {
+                    list = map.dictionary.Values.Where(d => d is TDecorator).Select(d => d as TDecorator).ToList();
+                    hasChanged = false;
+                }
+                return list;
+            }
         }
 
-        Dictionary<DecoratorId, Decorator> map = new();
-        List<PairDecorator> pairs = new();
-        List<EventDecorator> events = new();
+        EnumerableBuffer<PairDecorator> pairs;
+        EnumerableBuffer<EventDecorator> events;
     }
 }
