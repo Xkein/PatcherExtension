@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Decorators
 {
+    [Serializable]
     public abstract class Decorator
     {
         public string Description { get; set; }
@@ -14,6 +15,7 @@ namespace Extension.Decorators
         public IDecorative Decorative { get; internal set; }
     }
 
+    [Serializable]
     public abstract class PairDecorator : Decorator
     {
         public virtual object Key { get; set; }
@@ -25,6 +27,7 @@ namespace Extension.Decorators
         }
     }
 
+    [Serializable]
     public class PairDecorator<TKey, TValue> : PairDecorator
     {
         private ValueTuple<TKey, TValue> pair;
@@ -36,6 +39,7 @@ namespace Extension.Decorators
     }
 
     // simple version
+    [Serializable]
     public abstract class EventDecorator : Decorator
     {
         public virtual void OnUpdate() { }

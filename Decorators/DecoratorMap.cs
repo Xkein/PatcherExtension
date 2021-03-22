@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Decorators
 {
+    [Serializable]
     class DecoratorMap
     {
         public DecoratorMap()
@@ -70,6 +71,7 @@ namespace Extension.Decorators
         Dictionary<DecoratorId, Decorator> dictionary;
 
         // convenient to remove when enumerating
+        [Serializable]
         class EnumerableBuffer<TDecorator> where TDecorator : Decorator
         {
             DecoratorMap map;

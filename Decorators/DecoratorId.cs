@@ -10,6 +10,8 @@ namespace Extension.Decorators
     {
         None, Pair, Event
     }
+    
+    [Serializable]
     public class DecoratorId
     {
         public DecoratorId(int id, DecoratorSearchTip searchTip = DecoratorSearchTip.None)
