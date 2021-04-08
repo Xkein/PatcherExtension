@@ -25,4 +25,8 @@ Features
 
 How to write my extension?
 --------
-See the sample `MyExtension`
+See the sample [`MyExtension`](MyExtension/MyTechnoExt.cs)
+
+Save & Load
+--------
+See [`TechnoExt`](Ext/TechnoExt.cs) and [`MyExtension`](MyExtension/MyTechnoExt.cs)
