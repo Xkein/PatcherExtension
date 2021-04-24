@@ -88,7 +88,7 @@ namespace Extension.Decorators
             {
                 if (hasChanged)
                 {
-                    list = map.dictionary.Values.Where(d => d is TDecorator).Select(d => d as TDecorator).ToList();
+                    list = (from d in map.dictionary.Values where d is TDecorator select d as TDecorator).ToList();
                     hasChanged = false;
                 }
                 return list;
