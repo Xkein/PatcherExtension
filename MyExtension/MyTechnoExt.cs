@@ -23,7 +23,7 @@ namespace Extension.Ext
         public void LoadINI(Pointer<CCINIClass> pINI)
         {
             INIReader reader = new INIReader(pINI);
-            string section = OwnerObject.Ref.Base.Base.GetID();
+            string section = OwnerObject.Ref.Base.Base.ID;
 
             reader.ReadSuperWeapon(section, nameof(FireSuperWeapon), ref FireSuperWeapon.Pointer);
         }

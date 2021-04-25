@@ -31,7 +31,7 @@ namespace Extension.Ext
         {
             INI_EX exINI = new INI_EX(pINI);
             INIReader reader = new INIReader(exINI);
-            string section = OwnerObject.Ref.Base.Base.GetID();
+            string section = OwnerObject.Ref.Base.Base.ID;
 
             reader.ReadScript(section, "Script", ref Script);
         }
