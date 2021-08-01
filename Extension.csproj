@@ -55,6 +55,18 @@
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
+    <Compile Include="FX\Definitions\Vector.cs" />
+    <Compile Include="FX\FXEmitter.cs" />
+    <Compile Include="FX\FXEngine.cs" />
+    <Compile Include="FX\FXModule.cs" />
+    <Compile Include="FX\FXParameter.cs" />
+    <Compile Include="FX\FXParticle.cs" />
+    <Compile Include="FX\FXRender.cs" />
+    <Compile Include="FX\FXScript.cs" />
+    <Compile Include="FX\FXSystem.cs" />
+    <Compile Include="FX\Scripts\Emitter\EmitterState.cs" />
+    <Compile Include="FX\Scripts\Particle\ParticleState.cs" />
+    <Compile Include="FX\Scripts\System\SystemState.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
     <Compile Include="Script\BulletScripts.cs" />
     <Compile Include="Script\Script.cs" />
@@ -80,6 +92,8 @@
       <Name>PatcherYRpp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="FX\Parameters\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
