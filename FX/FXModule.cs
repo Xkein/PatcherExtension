@@ -8,7 +8,14 @@ namespace Extension.FX
 {
     public class FXModule : ICloneable
     {
-        public FXModule(FXSystem system, FXEmitter emitter, List<FXScript> scripts)
+        public FXModule(FXSystem system, FXEmitter emitter)
+        {
+            System = system;
+            Emitter = emitter;
+            Scripts = new List<FXScript>();
+        }
+
+        protected FXModule(FXSystem system, FXEmitter emitter, List<FXScript> scripts)
         {
             System = system;
             Emitter = emitter;

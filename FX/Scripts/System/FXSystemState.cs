@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extension.FX.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace Extension.FX.Scripts.System
 {
-    class SystemState : FXScript
+    public class FXSystemState : FXScript
     {
-        public SystemState(FXSystem system, FXEmitter emitter) : base(system, emitter)
+        public FXSystemState(FXSystem system, FXEmitter emitter) : base(system, emitter)
         {
         }
 
         // Input Parameters
 
-        public bool DelayFirstLoopOnly { get; set; }
-        public int LoopCount { get; set; }
-        public float LoopDelay { get; set; }
-        public float LoopDuration { get; set; }
-        public bool RecalculateDurationEachLoop { get; set; }
+        public bool DelayFirstLoopOnly { get; set; } = false;
+        public int LoopCount { get; set; } = 1;
+        public float LoopDelay { get; set; } = 0;
+        public float LoopDuration { get; set; } = 5.0f;
+        public bool RecalculateDurationEachLoop { get; set; } = false;
 
         public override FXScript Clone()
         {
-            var state = new SystemState(System, Emitter);
+            var state = new FXSystemState(System, Emitter);
             state.DelayFirstLoopOnly = DelayFirstLoopOnly;
             state.LoopCount = LoopCount;
             state.LoopDelay = LoopDelay;
@@ -95,7 +96,7 @@ namespace Extension.FX.Scripts.System
 
             if (System.LoopCount >= LoopCount)
             {
-                System.Completed = true;
+                System.ExecutionState = FXExecutionState.Inactive;
             }
         }
     }

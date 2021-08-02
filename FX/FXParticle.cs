@@ -11,32 +11,27 @@ namespace Extension.FX
     {
         // Parameters
 
-        public Vector3 Location { get; set; }
+        public Vector3 Position { get; set; }
         public Vector3 Velocity { get; set; }
 
 
         public float Age { get; set; }
-        public float CurrentLoopDelay { get; set; }
-        public float CurrentLoopDuration { get; set; }
-        public int LoopCount { get; set; }
-        public float LoopedAge { get; set; }
-        public float NormalizedLoopedAge { get; set; }
-        public bool Completed { get; set; }
+        public float Lifetime { get; set; }
+        public float NormalizedAge { get; set; }
+        public float Mass { get; set; }
+
 
         public virtual FXParticle Clone()
         {
             FXParticle particle = new FXParticle();
 
-            particle.Location = this.Location;
+            particle.Position = this.Position;
             particle.Velocity = this.Velocity;
 
             particle.Age = Age;
-            particle.CurrentLoopDelay = CurrentLoopDelay;
-            particle.CurrentLoopDuration = CurrentLoopDuration;
-            particle.LoopCount = LoopCount;
-            particle.LoopedAge = LoopedAge;
-            particle.NormalizedLoopedAge = NormalizedLoopedAge;
-            particle.Completed = Completed;
+            particle.Lifetime = Lifetime;
+            particle.NormalizedAge = NormalizedAge;
+            particle.Mass = Mass;
 
             return particle;
         }

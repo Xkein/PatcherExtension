@@ -55,6 +55,7 @@
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
+    <Compile Include="FX\Definitions\FXEnum.cs" />
     <Compile Include="FX\Definitions\Vector.cs" />
     <Compile Include="FX\FXEmitter.cs" />
     <Compile Include="FX\FXEngine.cs" />
@@ -63,10 +64,16 @@
     <Compile Include="FX\FXParticle.cs" />
     <Compile Include="FX\FXRender.cs" />
     <Compile Include="FX\FXScript.cs" />
+    <Compile Include="FX\FXSpawn.cs" />
     <Compile Include="FX\FXSystem.cs" />
-    <Compile Include="FX\Scripts\Emitter\EmitterState.cs" />
-    <Compile Include="FX\Scripts\Particle\ParticleState.cs" />
-    <Compile Include="FX\Scripts\System\SystemState.cs" />
+    <Compile Include="FX\Renders\FXRibbonRenderer.cs" />
+    <Compile Include="FX\Scripts\Emitter\FXEmitterState.cs" />
+    <Compile Include="FX\Scripts\Emitter\FXSpawnBurstInstantaneous.cs" />
+    <Compile Include="FX\Scripts\Emitter\FXSpawnRate.cs" />
+    <Compile Include="FX\Scripts\Particle\FXInitializeParticle.cs" />
+    <Compile Include="FX\Scripts\Particle\FXParticleState.cs" />
+    <Compile Include="FX\Scripts\Particle\FXSolveForcesAndVelocity.cs" />
+    <Compile Include="FX\Scripts\System\FXSystemState.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
     <Compile Include="Script\BulletScripts.cs" />
     <Compile Include="Script\Script.cs" />

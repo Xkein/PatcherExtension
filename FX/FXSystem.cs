@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extension.FX.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,13 @@ namespace Extension.FX
 {
     public class FXSystem : ICloneable
     {
-        public FXSystem(FXModule mSystemSpawn, FXModule mSystemUpdate, List<FXEmitter> emitters)
+        public FXSystem()
+        {
+            MSystemSpawn = new FXModule(this, null);
+            MSystemUpdate = new FXModule(this, null);
+            Emitters = new List<FXEmitter>();
+        }
+        protected FXSystem(FXModule mSystemSpawn, FXModule mSystemUpdate, List<FXEmitter> emitters)
         {
             MSystemSpawn = mSystemSpawn;
             MSystemUpdate = mSystemUpdate;
@@ -32,7 +39,10 @@ namespace Extension.FX
         public int LoopCount { get; set; }
         public float LoopedAge { get; set; }
         public float NormalizedLoopedAge { get; set; }
-        public bool Completed { get; set; }
+        public FXExecutionState ExecutionState { get; set; }
+
+
+        public Vector3 Position { get; set; }
 
         public virtual FXSystem Clone()
         {
@@ -48,16 +58,20 @@ namespace Extension.FX
             system.LoopCount = LoopCount;
             system.LoopedAge = LoopedAge;
             system.NormalizedLoopedAge = NormalizedLoopedAge;
-            system.Completed = Completed;
+            system.ExecutionState = ExecutionState;
+
+            system.Position = Position;
 
             return system;
         }
 
-        public virtual void Spawn()
+        public virtual void Spawn(Vector3 position)
         {
+            Position = position;
+
             foreach(var script in MSystemSpawn.Scripts)
             {
-                script.SystemSpawn();
+                script.SystemSpawn(position);
             }
 
             SpawnEmitter();
@@ -66,13 +80,13 @@ namespace Extension.FX
         {
             foreach (var emitter in Emitters.AsParallel())
             {
-                emitter.Spawn();
+                emitter.Spawn(Position);
             }
         }
 
         public virtual void Update()
         {
-            if (Completed)
+            if (ExecutionState != FXExecutionState.Active)
             {
                 return;
             }
@@ -89,12 +103,12 @@ namespace Extension.FX
 
         public virtual void Render()
         {
-            if (Completed)
+            if (ExecutionState != FXExecutionState.Active)
             {
                 return;
             }
 
-            foreach (var emitter in Emitters)
+            foreach (var emitter in Emitters.AsParallel())
             {
                 emitter.Render();
             }

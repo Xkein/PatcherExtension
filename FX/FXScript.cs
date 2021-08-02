@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extension.FX.Definitions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Extension.FX
 
         public abstract FXScript Clone();
 
-        public virtual void SystemSpawn()
+        public virtual void SystemSpawn(Vector3 position)
         {
             throw new NotImplementedException($"{this} has not implement SystemSpawn!");
         }
@@ -30,7 +31,7 @@ namespace Extension.FX
         {
             throw new NotImplementedException($"{this} has not implement SystemUpdate!");
         }
-        public virtual void EmitterSpawn()
+        public virtual void EmitterSpawn(Vector3 position)
         {
             throw new NotImplementedException($"{this} has not implement EmitterSpawn!");
         }
