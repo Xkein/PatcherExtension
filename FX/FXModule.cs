@@ -38,6 +38,11 @@ namespace Extension.FX
                 );
         }
 
+        public void Add(params FXScript[] scripts)
+        {
+            Scripts.AddRange(scripts);
+        }
+
         public override string ToString()
         {
             return GetType().FullName;

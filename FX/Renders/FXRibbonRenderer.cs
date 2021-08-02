@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace Extension.FX.Renders
 {
-    public class FXRibbonRenderer : FXRender
+    public class FXRibbonRenderer : FXRenderer
     {
         public FXRibbonRenderer(FXSystem system, FXEmitter emitter) : base(system, emitter)
         {
         }
+
+        // Parameters
 
         public Vector3 PreviousPosition { get; set; }
         public Vector3 Position { get; set; }

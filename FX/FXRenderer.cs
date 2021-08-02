@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Extension.FX
 {
-    public abstract class FXRender : FXScript
+    public abstract class FXRenderer : FXScript
     {
-        protected FXRender(FXSystem system, FXEmitter emitter) : base(system, emitter)
+        protected FXRenderer(FXSystem system, FXEmitter emitter) : base(system, emitter)
         {
         }
 

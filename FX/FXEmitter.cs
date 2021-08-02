@@ -9,6 +9,10 @@ namespace Extension.FX
 {
     public class FXEmitter : ICloneable
     {
+        public FXEmitter(FXSystem system) : this(system, new FXParticle())
+        {
+        }
+
         public FXEmitter(FXSystem system, FXParticle prototype)
         {
             System = system;
@@ -41,7 +45,7 @@ namespace Extension.FX
 
         public FXSystem System { get; }
 
-        public List<FXParticle> Particles { get; }
+        public List<FXParticle> Particles { get; private set; }
 
         public FXParticle Prototype { get; set; }
 
@@ -114,6 +118,7 @@ namespace Extension.FX
             }
 
             UpdateParticles();
+            ClearParticles();
         }
         private void UpdateParticles()
         {
@@ -135,10 +140,10 @@ namespace Extension.FX
 
             foreach (var script in MRender.Scripts)
             {
-                var render = script as FXRender;
+                var renderer = script as FXRenderer;
                 foreach (var particle in Particles.AsParallel())
                 {
-                    render.ParticleRender(particle);
+                    renderer.ParticleRender(particle);
                 }
             }
         }
@@ -154,6 +159,15 @@ namespace Extension.FX
             }
 
             return particle;
+        }
+
+        public void ClearParticles()
+        {
+            var inactiveParticles = from p in Particles where !p.Alive select p;
+            if (inactiveParticles.Any())
+            {
+                Particles = Particles.Except(inactiveParticles).ToList();
+            }
         }
 
         public override string ToString()

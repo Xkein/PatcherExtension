@@ -29,8 +29,6 @@ namespace Extension.FX.Scripts.Particle
             state.Lifetime = Lifetime;
             state.DeltaTime = DeltaTime;
 
-            state.Alive = Alive;
-
             return state;
         }
 
@@ -49,7 +47,7 @@ namespace Extension.FX.Scripts.Particle
 
                 if(nextAge >= safeLifetime_smaller)
                 {
-                    Alive = false;
+                    particle.Alive = false;
                 }
             }
             else
@@ -67,15 +65,11 @@ namespace Extension.FX.Scripts.Particle
 
                 if (particle.Age > safeLifetime_smaller && shouldInactive)
                 {
-                    Alive = false;
+                    particle.Alive = false;
                 }
             }
 
             particle.NormalizedAge = particle.Age / safeLifetime;
         }
-
-        // Unique Attribute
-
-        public bool Alive { get; private set; } = true;
     }
 }

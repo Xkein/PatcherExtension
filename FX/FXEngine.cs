@@ -20,5 +20,20 @@ namespace Extension.FX
                 return min + (float)_random.NextDouble() * length;
             }
         }
+
+        public static float Clamp(float a, float min, float max)
+        {
+            if (a < min)
+            {
+                return min;
+            }
+
+            if(a > max)
+            {
+                return max;
+            }
+
+            return a;
+        }
     }
 }

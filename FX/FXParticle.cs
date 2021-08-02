@@ -20,6 +20,13 @@ namespace Extension.FX
         public float NormalizedAge { get; set; }
         public float Mass { get; set; }
 
+        // Data 
+
+        public bool Alive { get; set; } = true;
+
+        // Transient
+        public Vector3 PhysicsForce;
+        public float PhysicsDrag;
 
         public virtual FXParticle Clone()
         {
@@ -32,6 +39,8 @@ namespace Extension.FX
             particle.Lifetime = Lifetime;
             particle.NormalizedAge = NormalizedAge;
             particle.Mass = Mass;
+
+            particle.Alive = Alive;
 
             return particle;
         }

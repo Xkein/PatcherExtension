@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Extension.FX.Scripts.Emitter
 {
+    [FXPreDependency(nameof(FXEmitterState))]
     public class FXSpawnBurstInstantaneous : FXSpawn
     {
         public FXSpawnBurstInstantaneous(FXSystem system, FXEmitter emitter) : base(system, emitter)
