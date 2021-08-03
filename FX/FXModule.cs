@@ -29,12 +29,12 @@ namespace Extension.FX
 
         public List<FXScript> Scripts { get; }
 
-        public virtual FXModule Clone()
+        public virtual FXModule Clone(FXSystem system = null, FXEmitter emitter = null)
         {
             return new FXModule(
-                System,
-                Emitter,
-                (from s in Scripts select s.Clone()).ToList()
+                system ?? System,
+                emitter ?? Emitter,
+                (from s in Scripts select s.Clone(system, emitter)).ToList()
                 );
         }
 

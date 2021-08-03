@@ -22,9 +22,9 @@ namespace Extension.FX.Scripts.Particle
         public float? Lifetime { get; set; }
         public float DeltaTime { get; set; } = FXEngine.DeltaTime;
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var state = new FXParticleState(System, Emitter);
+            var state = new FXParticleState(system ?? System, emitter ?? Emitter);
             state.KillParticlesWhenLifetimeHasElapsed = KillParticlesWhenLifetimeHasElapsed;
             state.Lifetime = Lifetime;
             state.DeltaTime = DeltaTime;

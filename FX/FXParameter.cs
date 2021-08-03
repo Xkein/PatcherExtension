@@ -6,17 +6,28 @@ using System.Threading.Tasks;
 
 namespace Extension.FX
 {
-    public abstract class FXParameter : ICloneable
+    public interface IFXParameter : ICloneable
     {
-        protected FXParameter(string name)
+        public string Name { get; }
+        public object Value { get; set; }
+    }
+
+    public class FXParameter<T> : IFXParameter
+    {
+        public FXParameter(string name)
         {
             Name = name;
         }
 
         public string Name { get; }
-        public abstract object Value { get; set; }
+        public virtual T Value { get; set; }
 
-        public abstract FXParameter Clone();
+        object IFXParameter.Value { get => Value; set => Value = (T)value; }
+
+        public virtual FXParameter<T> Clone()
+        {
+            return new FXParameter<T>(Name) { Value = this.Value };
+        }
 
         public override string ToString()
         {

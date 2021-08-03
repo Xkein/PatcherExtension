@@ -25,9 +25,9 @@ namespace Extension.FX.Scripts.Particle
         public float MassMin { get; set; } = 0.75f;
         public float MassMax { get; set; } = 5.0f;
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var initializeParticle = new FXInitializeParticle(System, Emitter);
+            var initializeParticle = new FXInitializeParticle(system ?? System, emitter ?? Emitter);
 
             initializeParticle.LifetimeMode = LifetimeMode;
             initializeParticle.Lifetime = Lifetime;
@@ -44,7 +44,7 @@ namespace Extension.FX.Scripts.Particle
 
         public override void ParticleSpawn(FXParticle particle)
         {
-            particle.Position = Emitter.Position;
+            particle.Position = Emitter.WorldPosition;
 
             switch (LifetimeMode)
             {

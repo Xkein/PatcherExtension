@@ -60,8 +60,10 @@
     <Compile Include="FX\Definitions\Vector.cs" />
     <Compile Include="FX\FXEmitter.cs" />
     <Compile Include="FX\FXEngine.cs" />
+    <Compile Include="FX\FXMap.cs" />
     <Compile Include="FX\FXModule.cs" />
     <Compile Include="FX\FXParameter.cs" />
+    <Compile Include="FX\FXParameterMap.cs" />
     <Compile Include="FX\FXParticle.cs" />
     <Compile Include="FX\FXRenderer.cs" />
     <Compile Include="FX\FXScript.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="FX\Scripts\Emitter\FXSpawnBurstInstantaneous.cs" />
     <Compile Include="FX\Scripts\Emitter\FXSpawnRate.cs" />
     <Compile Include="FX\Scripts\Particle\FXCollision.cs" />
+    <Compile Include="FX\Scripts\Particle\FXDrag.cs" />
     <Compile Include="FX\Scripts\Particle\FXGravityForce.cs" />
     <Compile Include="FX\Scripts\Particle\FXInitializeParticle.cs" />
     <Compile Include="FX\Scripts\Particle\FXParticleState.cs" />

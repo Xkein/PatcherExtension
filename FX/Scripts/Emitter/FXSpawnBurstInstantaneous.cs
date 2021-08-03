@@ -19,9 +19,9 @@ namespace Extension.FX.Scripts.Emitter
         public float? Age { get; set; }
 
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var spawnBurstInstantaneous = new FXSpawnBurstInstantaneous(System, Emitter);
+            var spawnBurstInstantaneous = new FXSpawnBurstInstantaneous(system ?? System, emitter ?? Emitter);
 
             spawnBurstInstantaneous.SpawnInfo = SpawnInfo;
 

@@ -12,9 +12,9 @@ namespace Extension.FX.Scripts.Particle
 
         public Vector3 Gravity { get; set; } = new Vector3(0, 0, -980);
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var gravityForce = new FXGravityForce(System, Emitter);
+            var gravityForce = new FXGravityForce(system ?? System, emitter ?? Emitter);
 
             gravityForce.Gravity = Gravity;
 

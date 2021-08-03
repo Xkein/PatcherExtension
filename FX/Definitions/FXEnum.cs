@@ -28,4 +28,10 @@ namespace Extension.FX.Definitions
         DirectSet,
         Random
     }
+
+    public enum FXCoordinateSpace
+    {
+        World,
+        Local
+    }
 }

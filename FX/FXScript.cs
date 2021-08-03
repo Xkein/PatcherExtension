@@ -20,7 +20,7 @@ namespace Extension.FX
         public FXSystem System { get; }
         public FXEmitter Emitter { get; }
 
-        public abstract FXScript Clone();
+        public abstract FXScript Clone(FXSystem system = null, FXEmitter emitter = null);
 
         public virtual void SystemSpawn(Vector3 position)
         {
@@ -57,7 +57,7 @@ namespace Extension.FX
 
         object ICloneable.Clone()
         {
-            return Clone();
+            return Clone(System, Emitter);
         }
     }
 }

@@ -22,23 +22,28 @@ namespace Extension.FX
             MParticleUpdate = new FXModule(system, this);
             MRender = new FXModule(system, this);
 
-            Prototype = prototype;
+            Prototype = prototype.Clone();
 
             Particles = new List<FXParticle>();
+            Map = new FXParameterMap();
         }
 
-        protected FXEmitter(FXSystem system, FXModule mEmitterSpawn, FXModule mEmitterUpdate, FXModule mParticleSpawn, FXModule mParticleUpdate, FXModule mRender, FXParticle prototype, List<FXParticle> particles)
+        /// <summary>
+        /// Clone Constructor.
+        /// </summary>
+        protected FXEmitter(FXSystem system, FXModule mEmitterSpawn, FXModule mEmitterUpdate, FXModule mParticleSpawn, FXModule mParticleUpdate, FXModule mRender, FXParticle prototype, List<FXParticle> particles, FXParameterMap map)
         {
             System = system;
-            MEmitterSpawn = mEmitterSpawn;
-            MEmitterUpdate = mEmitterUpdate;
-            MParticleSpawn = mParticleSpawn;
-            MParticleUpdate = mParticleUpdate;
-            MRender = mRender;
+            MEmitterSpawn = mEmitterSpawn.Clone(system, this);
+            MEmitterUpdate = mEmitterUpdate.Clone(system, this);
+            MParticleSpawn = mParticleSpawn.Clone(system, this);
+            MParticleUpdate = mParticleUpdate.Clone(system, this);
+            MRender = mRender.Clone(system, this);
 
-            Prototype = prototype;
+            Prototype = prototype.Clone();
 
-            Particles = particles;
+            Particles = (from p in particles select p.Clone()).ToList();
+            Map = map.Clone();
         }
 
         // Variables
@@ -48,6 +53,7 @@ namespace Extension.FX
         public List<FXParticle> Particles { get; private set; }
 
         public FXParticle Prototype { get; set; }
+        public FXParameterMap Map { get; }
 
         // Modules
 
@@ -67,19 +73,33 @@ namespace Extension.FX
         public float NormalizedLoopedAge { get; set; }
         public FXExecutionState ExecutionState { get; set; }
 
-        public Vector3 Position { get; set; }
-
-        public virtual FXEmitter Clone()
+        public Vector3 LocalPosition { get; set; }
+        public FXCoordinateSpace CoordinateSpace { get; set; }
+        public Vector3 WorldPosition
         {
-             var emitter = new FXEmitter(
-                System,
-                MEmitterSpawn.Clone(),
-                MEmitterUpdate.Clone(),
-                MParticleSpawn.Clone(),
-                MParticleUpdate.Clone(),
-                MRender.Clone(),
-                Prototype.Clone(),
-                (from p in Particles select p.Clone()).ToList()
+            get
+            {
+                return CoordinateSpace == FXCoordinateSpace.World ? System.Position + LocalPosition : LocalPosition;
+            }
+            set
+            {
+                LocalPosition = CoordinateSpace == FXCoordinateSpace.World ? value - System.Position : value;
+            }
+        }
+
+        public virtual FXEmitter Clone(FXSystem system = null)
+        {
+            FXEmitter emitter = null;
+            emitter = new FXEmitter(
+                system ?? System,
+                MEmitterSpawn,
+                MEmitterUpdate,
+                MParticleSpawn,
+                MParticleUpdate,
+                MRender,
+                Prototype,
+                Particles,
+                Map
                 );
 
             emitter.Age = Age;
@@ -90,14 +110,15 @@ namespace Extension.FX
             emitter.NormalizedLoopedAge = NormalizedLoopedAge;
             emitter.ExecutionState = ExecutionState;
 
-            emitter.Position = Position;
+            emitter.LocalPosition = LocalPosition;
+            emitter.CoordinateSpace = CoordinateSpace;
 
             return emitter;
         }
 
         public virtual void Spawn(Vector3 position)
         {
-            Position = position;
+            WorldPosition = position;
 
             foreach (var script in MEmitterSpawn.Scripts)
             {
@@ -107,7 +128,7 @@ namespace Extension.FX
 
         public virtual void Update()
         {
-            if (ExecutionState != FXExecutionState.Active)
+            if (ExecutionState == FXExecutionState.Complete)
             {
                 return;
             }
@@ -124,16 +145,23 @@ namespace Extension.FX
         {
             foreach (var script in MParticleUpdate.Scripts)
             {
-                foreach (var particle in Particles.AsParallel())
+                if (FXEngine.EnableParallelUpdate)
                 {
-                    script.ParticleUpdate(particle);
+                    Parallel.ForEach(Particles, particle => script.ParticleUpdate(particle));
+                }
+                else
+                {
+                    foreach (var particle in Particles)
+                    {
+                        script.ParticleUpdate(particle);
+                    }
                 }
             }
         }
 
         public virtual void Render()
         {
-            if (ExecutionState != FXExecutionState.Active)
+            if (ExecutionState == FXExecutionState.Complete)
             {
                 return;
             }
@@ -141,9 +169,16 @@ namespace Extension.FX
             foreach (var script in MRender.Scripts)
             {
                 var renderer = script as FXRenderer;
-                foreach (var particle in Particles.AsParallel())
+                if (FXEngine.EnableParallelRender)
                 {
-                    renderer.ParticleRender(particle);
+                    Parallel.ForEach(Particles, particle => renderer.ParticleRender(particle));
+                }
+                else
+                {
+                    foreach (var particle in Particles)
+                    {
+                        renderer.ParticleRender(particle);
+                    }
                 }
             }
         }

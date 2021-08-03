@@ -16,12 +16,13 @@ namespace Extension.FX.Scripts.Emitter
         public float SpawnRate { get; set; } = 0;
         public float SpawnProbability { get; set; } = 1;
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var spawnRate = new FXSpawnRate(System, Emitter);
+            var spawnRate = new FXSpawnRate(system ?? System, emitter ?? Emitter);
 
             spawnRate.SpawnInfo = SpawnInfo;
 
+            spawnRate.SpawnRate = SpawnRate;
             spawnRate.SpawnProbability = SpawnProbability;
 
             return spawnRate;
@@ -40,6 +41,8 @@ namespace Extension.FX.Scripts.Emitter
             SpawnInfo.Count = SpawnProbability >= 1 || SpawnProbability > FXEngine.CalculateRandomRange() ? spawnCount : 0;
             SpawnInfo.InterpStartDt = interpStartDT;
             SpawnInfo.IntervalDt = intervalDT;
+
+            CanEverSpawn = true;
 
             base.EmitterUpdate();
         }

@@ -18,9 +18,9 @@ namespace Extension.FX.Scripts.Particle
         public float? AccelerationLimit { get; set; }
         public float? SpeedLimit { get; set; }
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var solveForcesAndVelocity = new FXSolveForcesAndVelocity(System, Emitter);
+            var solveForcesAndVelocity = new FXSolveForcesAndVelocity(system ?? System, emitter ?? Emitter);
 
             return solveForcesAndVelocity;
         }

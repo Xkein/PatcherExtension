@@ -9,6 +9,23 @@ namespace Extension.FX
 {
     public class FXParticle : ICloneable
     {
+        public FXParticle()
+        {
+            Map = new FXParameterMap();
+        }
+
+        /// <summary>
+        /// Clone Constructor.
+        /// </summary>
+        protected FXParticle(FXParameterMap map)
+        {
+            Map = map.Clone();
+        }
+
+        // Variables
+
+        public FXParameterMap Map { get; }
+
         // Parameters
 
         public Vector3 Position { get; set; }
@@ -25,15 +42,17 @@ namespace Extension.FX
         public bool Alive { get; set; } = true;
 
         // Transient
+
         public Vector3 PhysicsForce;
         public float PhysicsDrag;
+        public float PhysicsRotationalDrag;
 
         public virtual FXParticle Clone()
         {
-            FXParticle particle = new FXParticle();
+            FXParticle particle = new FXParticle(Map);
 
-            particle.Position = this.Position;
-            particle.Velocity = this.Velocity;
+            particle.Position = Position;
+            particle.Velocity = Velocity;
 
             particle.Age = Age;
             particle.Lifetime = Lifetime;

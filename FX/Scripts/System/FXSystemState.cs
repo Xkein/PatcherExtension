@@ -21,9 +21,9 @@ namespace Extension.FX.Scripts.System
         public float LoopDuration { get; set; } = 5.0f;
         public bool RecalculateDurationEachLoop { get; set; } = false;
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var state = new FXSystemState(System, Emitter);
+            var state = new FXSystemState(system ?? System, emitter ?? Emitter);
             state.DelayFirstLoopOnly = DelayFirstLoopOnly;
             state.LoopCount = LoopCount;
             state.LoopDelay = LoopDelay;
@@ -96,7 +96,7 @@ namespace Extension.FX.Scripts.System
 
             if (System.LoopCount >= LoopCount)
             {
-                System.ExecutionState = FXExecutionState.Inactive;
+                System.ExecutionState = FXExecutionState.InactiveClear;
             }
         }
     }

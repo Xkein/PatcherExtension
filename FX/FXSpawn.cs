@@ -29,41 +29,52 @@ namespace Extension.FX
         public float CurrentLoopDelay { get; set; }
         public float LoopedAge { get; set; }
 
+        // Transient
+
+        public bool CanEverSpawn { get; set; }
+
         public override void EmitterUpdate()
         {
-            bool loopCountIncreased;
-
-            if (CurrentSpawnCount == 0)
-            {
-                LoopedAge = SpawnInfo.InterpStartDt;
-                CurrentLoopDelay = SpawnInfo.InterpStartDt;
-            }
-
-            var nextLoopedAge = LoopedAge + FXEngine.DeltaTime;
-            loopCountIncreased = nextLoopedAge > CurrentLoopDelay;
-
-            if (loopCountIncreased)
-            {
-                CurrentSpawnCount++;
-                LoopedAge = 0;
-                CurrentLoopDelay = SpawnInfo.IntervalDt;
-            }
-            else
-            {
-                LoopedAge = nextLoopedAge;
-            }
-
-            if (loopCountIncreased)
+            if (CanEverSpawn)
             {
                 SpawnParticles();
             }
+            else
+            {
+                bool loopCountIncreased;
+
+                if (CurrentSpawnCount == 0)
+                {
+                    LoopedAge = -SpawnInfo.InterpStartDt;
+                    CurrentLoopDelay = FXEngine.DeltaTime;
+                }
+
+                var nextLoopedAge = LoopedAge + FXEngine.DeltaTime;
+                loopCountIncreased = nextLoopedAge > CurrentLoopDelay;
+
+                if (loopCountIncreased)
+                {
+                    CurrentSpawnCount++;
+                    LoopedAge = 0;
+                    CurrentLoopDelay = SpawnInfo.IntervalDt;
+                }
+                else
+                {
+                    LoopedAge = nextLoopedAge;
+                }
+
+                if (loopCountIncreased)
+                {
+                    SpawnParticles();
+                }
+            }
+
+            CanEverSpawn = false;
         }
 
         private void SpawnParticles()
         {
-            var spawnCount = SpawnInfo.IntervalDt > 0 ? 1 : SpawnInfo.Count;
-
-            for (int idx = 0; idx < spawnCount; idx++)
+            for (int idx = 0; idx < SpawnInfo.Count; idx++)
             {
                 Emitter.SpawnParticle();
                 SpawnInfo.Count--;

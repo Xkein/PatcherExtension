@@ -14,17 +14,24 @@ namespace Extension.FX
             MSystemSpawn = new FXModule(this, null);
             MSystemUpdate = new FXModule(this, null);
             Emitters = new List<FXEmitter>();
+            Map = new FXParameterMap();
         }
-        protected FXSystem(FXModule mSystemSpawn, FXModule mSystemUpdate, List<FXEmitter> emitters)
+
+        /// <summary>
+        /// Clone Constructor.
+        /// </summary>
+        protected FXSystem(FXModule mSystemSpawn, FXModule mSystemUpdate, List<FXEmitter> emitters, FXParameterMap map)
         {
-            MSystemSpawn = mSystemSpawn;
-            MSystemUpdate = mSystemUpdate;
-            Emitters = emitters;
+            MSystemSpawn = mSystemSpawn.Clone(this, null);
+            MSystemUpdate = mSystemUpdate.Clone(this, null);
+            Emitters = (from e in emitters select e.Clone(this)).ToList();
+            Map = map.Clone();
         }
 
         // Variables
 
         public List<FXEmitter> Emitters { get; }
+        public FXParameterMap Map { get; }
 
         // Modules
 
@@ -46,10 +53,11 @@ namespace Extension.FX
 
         public virtual FXSystem Clone()
         {
-            var system = new FXSystem(
-                MSystemSpawn.Clone(),
-                MSystemUpdate.Clone(),
-                (from e in Emitters select e.Clone()).ToList()
+            FXSystem system = new FXSystem(
+                MSystemSpawn,
+                MSystemUpdate,
+                Emitters,
+                Map
                 );
 
             system.Age = Age;
@@ -78,39 +86,65 @@ namespace Extension.FX
         }
         private void SpawnEmitter()
         {
-            foreach (var emitter in Emitters.AsParallel())
+            if (FXEngine.EnableParallelSpawn)
             {
-                emitter.Spawn(Position);
+                Parallel.ForEach(Emitters, emitter => emitter.Spawn(Position));
+            }
+            else
+            {
+                foreach (var emitter in Emitters)
+                {
+                    emitter.Spawn(Position);
+                }
             }
         }
 
         public virtual void Update()
         {
-            if (ExecutionState != FXExecutionState.Active)
+            if (ExecutionState == FXExecutionState.Complete)
             {
                 return;
+            }
+
+            foreach (var script in MSystemUpdate.Scripts)
+            {
+                script.SystemUpdate();
             }
 
             UpdateEmitter();
         }
         private void UpdateEmitter()
         {
-            foreach (var script in MSystemSpawn.Scripts)
+            if (FXEngine.EnableParallelUpdate)
             {
-                script.SystemUpdate();
+                Parallel.ForEach(Emitters, emitter => emitter.Update());
+            }
+            else
+            {
+                foreach (var emitter in Emitters)
+                {
+                    emitter.Update();
+                }
             }
         }
 
         public virtual void Render()
         {
-            if (ExecutionState != FXExecutionState.Active)
+            if (ExecutionState == FXExecutionState.Complete)
             {
                 return;
             }
 
-            foreach (var emitter in Emitters.AsParallel())
+            if (FXEngine.EnableParallelRender)
             {
-                emitter.Render();
+                Parallel.ForEach(Emitters, emitter => emitter.Render());
+            }
+            else
+            {
+                foreach (var emitter in Emitters)
+                {
+                    emitter.Render();
+                }
             }
         }
 

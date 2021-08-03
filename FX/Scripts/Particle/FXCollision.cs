@@ -13,9 +13,9 @@ namespace Extension.FX.Scripts.Particle
         {
         }
 
-        public override FXScript Clone()
+        public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
-            var collision = new FXCollision(System, Emitter);
+            var collision = new FXCollision(system ?? System, emitter ?? Emitter);
 
             return collision;
         }
