@@ -101,9 +101,11 @@ namespace Extension.FX
 
         public virtual void Update()
         {
-            if (ExecutionState == FXExecutionState.Complete)
+            switch (ExecutionState)
             {
-                return;
+                case FXExecutionState.InactiveClear:
+                case FXExecutionState.Complete:
+                    return;
             }
 
             foreach (var script in MSystemUpdate.Scripts)
@@ -112,6 +114,15 @@ namespace Extension.FX
             }
 
             UpdateEmitter();
+
+            if (ExecutionState == FXExecutionState.Inactive)
+            {
+                if (Emitters.All(e => e.ExecutionState == FXExecutionState.InactiveClear))
+                {
+                    ExecutionState = FXExecutionState.InactiveClear;
+                    Emitters.ForEach(e => e.ExecutionState = FXExecutionState.Complete);
+                }
+            }
         }
         private void UpdateEmitter()
         {
@@ -130,9 +141,11 @@ namespace Extension.FX
 
         public virtual void Render()
         {
-            if (ExecutionState == FXExecutionState.Complete)
+            switch (ExecutionState)
             {
-                return;
+                case FXExecutionState.InactiveClear:
+                case FXExecutionState.Complete:
+                    return;
             }
 
             if (FXEngine.EnableParallelRender)

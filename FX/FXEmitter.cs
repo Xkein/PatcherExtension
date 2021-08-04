@@ -128,9 +128,11 @@ namespace Extension.FX
 
         public virtual void Update()
         {
-            if (ExecutionState == FXExecutionState.Complete)
+            switch (ExecutionState)
             {
-                return;
+                case FXExecutionState.InactiveClear:
+                case FXExecutionState.Complete:
+                    return;
             }
 
             foreach (var script in MEmitterUpdate.Scripts)
@@ -140,6 +142,14 @@ namespace Extension.FX
 
             UpdateParticles();
             ClearParticles();
+
+            if (ExecutionState == FXExecutionState.Inactive)
+            {
+                if(Particles.Count == 0)
+                {
+                    ExecutionState = FXExecutionState.InactiveClear;
+                }
+            }
         }
         private void UpdateParticles()
         {
@@ -161,9 +171,11 @@ namespace Extension.FX
 
         public virtual void Render()
         {
-            if (ExecutionState == FXExecutionState.Complete)
+            switch (ExecutionState)
             {
-                return;
+                case FXExecutionState.InactiveClear:
+                case FXExecutionState.Complete:
+                    return;
             }
 
             foreach (var script in MRender.Scripts)

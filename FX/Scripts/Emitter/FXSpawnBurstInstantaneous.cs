@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Extension.FX.Parameters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,16 @@ namespace Extension.FX.Scripts.Emitter
     {
         public FXSpawnBurstInstantaneous(FXSystem system, FXEmitter emitter) : base(system, emitter)
         {
+            var ageLink = new FXLinkParameter<float>(nameof(Age), "Emitter.LoopedAge");
+            ageLink.SetContext(system, emitter, this);
+            Age = ageLink;
         }
 
         public int SpawnCount { get; set; } = 1;
         public float SpawnTime { get; set; } = 0;
         public float SpawnProbability { get; set; } = 1;
-        public float? Age { get; set; }
+        public FXParameter<float> Age { get; set; }
+        public int SpawnGroup { get; set; } = 0;
 
 
         public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
@@ -28,14 +33,15 @@ namespace Extension.FX.Scripts.Emitter
             spawnBurstInstantaneous.SpawnCount = SpawnCount;
             spawnBurstInstantaneous.SpawnTime = SpawnTime;
             spawnBurstInstantaneous.SpawnProbability = SpawnProbability;
-            spawnBurstInstantaneous.Age = Age;
+            spawnBurstInstantaneous.Age = Age.Clone(spawnBurstInstantaneous);
+            spawnBurstInstantaneous.SpawnGroup = SpawnGroup;
 
             return spawnBurstInstantaneous;
         }
 
         public override void EmitterUpdate()
         {
-            var age = Age.GetValueOrDefault(Emitter.LoopedAge);
+            float age = Age; // default link to Emitter.LoopedAge
 
             SpawnInfo.InterpStartDt = SpawnTime + FXEngine.DeltaTime - age;
 
@@ -47,6 +53,7 @@ namespace Extension.FX.Scripts.Emitter
 
             SpawnInfo.Count = shouldSpawn ? SpawnCount : 0;
             SpawnInfo.IntervalDt = 0;
+            SpawnInfo.SpawnGroup = SpawnGroup;
 
             base.EmitterUpdate();
         }

@@ -44,7 +44,6 @@ namespace Extension.FX
         {
             throw new NotImplementedException($"{this} has not implement ParticleSpawn!");
         }
-
         public virtual void ParticleUpdate(FXParticle particle)
         {
             throw new NotImplementedException($"{this} has not implement ParticleUpdate!");

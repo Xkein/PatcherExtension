@@ -10,19 +10,11 @@ namespace Extension.FX
 {
     public class FXEngine
     {
+        #region Constant
         public static float DeltaTime = 1f / 60.0f; // 60fps
+        #endregion
 
-        private static Random _random = new Random(60);
-        private static object _random_locker = new object();
-        public static float CalculateRandomRange(float min = 0.0f, float max = 1.0f)
-        {
-            lock (_random_locker)
-            {
-                float length = max - min;
-                return min + (float)_random.NextDouble() * length;
-            }
-        }
-
+        #region Math
         public static float Clamp(float a, float min, float max)
         {
             if (a < min)
@@ -30,12 +22,28 @@ namespace Extension.FX
                 return min;
             }
 
-            if(a > max)
+            if (a > max)
             {
                 return max;
             }
 
             return a;
+        }
+
+        private static Random _random = new Random(60);
+        private static object _random_locker = new object();
+        public static float CalculateRandomRange(float min = 0.0f, float max = 1.0f)
+        {
+            if (min == max)
+            {
+                return min;
+            }
+
+            lock (_random_locker)
+            {
+                float length = max - min;
+                return min + (float)_random.NextDouble() * length;
+            }
         }
 
         public static Vector3 CalculateRandomUnitVector()
@@ -60,6 +68,17 @@ namespace Extension.FX
             return CalculateRandomUnitVector() * CalculateRandomRange(innerRadius, outerRadius);
         }
 
+        public static Vector3 CalculateRandomPointInBox(Vector3 size)
+        {
+            return new Vector3(
+                CalculateRandomRange(0, size.X) - size.X / 2f,
+                CalculateRandomRange(0, size.Y) - size.Y / 2f,
+                CalculateRandomRange(0, size.Z) - size.Z / 2f
+                );
+        }
+        #endregion
+
+        #region Work
         public static bool EnableParallelSpawn { get; set; } = true;
         public static bool EnableParallelUpdate { get; set; } = true;
         public static bool EnableParallelRender { get; set; } = true;
@@ -99,20 +118,34 @@ namespace Extension.FX
         {
             WorkSystems.Clear();
         }
-        
+
         public static void Update()
         {
             WorkListRWLock.EnterWriteLock();
 
             var list = WorkSystems.ToArray();
 
+            if (FXEngine.EnableParallelUpdate)
+            {
+                Parallel.ForEach(WorkSystems, system => system.Update());
+            }
+            else
+            {
+                foreach (var system in list)
+                {
+                    system.Update();
+                }
+            }
+
             foreach (var system in list)
             {
-                system.Update();
-
-                if(system.ExecutionState == FXExecutionState.Complete)
+                switch (system.ExecutionState)
                 {
-                    RemoveSystem(system);
+                    case FXExecutionState.InactiveClear:
+                    case FXExecutionState.Complete:
+                        RemoveSystem(system);
+                        system.ExecutionState = FXExecutionState.Complete;
+                        break;
                 }
             }
 
@@ -122,12 +155,24 @@ namespace Extension.FX
         {
             WorkListRWLock.EnterReadLock();
 
-            foreach (var system in WorkSystems)
+            if (FXEngine.EnableParallelRender)
             {
-                system.Render();
+                Parallel.ForEach(WorkSystems, system => system.Render());
+            }
+            else
+            {
+                foreach (var system in WorkSystems)
+                {
+                    system.Render();
+                }
             }
 
             WorkListRWLock.ExitReadLock();
         }
+        #endregion
+
+        #region Graphic
+
+        #endregion
     }
 }

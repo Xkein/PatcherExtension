@@ -96,7 +96,7 @@ namespace Extension.FX.Scripts.Emitter
 
             if (Emitter.LoopCount >= LoopCount)
             {
-                Emitter.ExecutionState = FXExecutionState.InactiveClear;
+                Emitter.ExecutionState = FXExecutionState.Inactive;
             }
         }
     }

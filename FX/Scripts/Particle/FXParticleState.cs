@@ -1,4 +1,5 @@
 ﻿using Extension.FX.Definitions;
+using Extension.FX.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ namespace Extension.FX.Scripts.Particle
     {
         public FXParticleState(FXSystem system, FXEmitter emitter) : base(system, emitter)
         {
+            //var lifetimeLink = new FXLinkParameter<float>(nameof(Lifetime), "Particle.Lifetime");
+            //lifetimeLink.SetContext(system, emitter, this);
+            //Lifetime = lifetimeLink;
         }
 
         // Input Parameters
@@ -18,15 +22,14 @@ namespace Extension.FX.Scripts.Particle
         public bool KillParticlesWhenLifetimeHasElapsed { get; set; } = true;
         public bool LoopParticlesLifetime { get; set; } = false;
         public bool LetInfinitelyLivedParticlesDieWhenEmitterDeactivates { get; set; } = false;
-        // default to FXParticle.Lifetime
-        public float? Lifetime { get; set; }
+        //public FXParameter<float> Lifetime { get; set; }
         public float DeltaTime { get; set; } = FXEngine.DeltaTime;
 
         public override FXScript Clone(FXSystem system = null, FXEmitter emitter = null)
         {
             var state = new FXParticleState(system ?? System, emitter ?? Emitter);
             state.KillParticlesWhenLifetimeHasElapsed = KillParticlesWhenLifetimeHasElapsed;
-            state.Lifetime = Lifetime;
+            //state.Lifetime = Lifetime.Clone(state);
             state.DeltaTime = DeltaTime;
 
             return state;
@@ -38,7 +41,7 @@ namespace Extension.FX.Scripts.Particle
             shouldInactive &= LetInfinitelyLivedParticlesDieWhenEmitterDeactivates;
 
             var nextAge = particle.Age + DeltaTime;
-            var safeLifetime = Math.Max(Lifetime.GetValueOrDefault(particle.Lifetime), 0.00001f);
+            var safeLifetime = Math.Max(/*Lifetime*/particle.Lifetime, 0.00001f); // default to Particle.Lifetime
             var safeLifetime_smaller = safeLifetime - 0.0001f;
 
             if (KillParticlesWhenLifetimeHasElapsed)

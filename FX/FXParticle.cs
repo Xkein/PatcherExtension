@@ -36,6 +36,7 @@ namespace Extension.FX
         public float Lifetime { get; set; }
         public float NormalizedAge { get; set; }
         public float Mass { get; set; }
+        public int SpawnGroup { get; set; }
 
         // Data 
 
@@ -58,6 +59,7 @@ namespace Extension.FX
             particle.Lifetime = Lifetime;
             particle.NormalizedAge = NormalizedAge;
             particle.Mass = Mass;
+            particle.SpawnGroup = SpawnGroup;
 
             particle.Alive = Alive;
 

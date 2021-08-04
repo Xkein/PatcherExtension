@@ -96,7 +96,7 @@ namespace Extension.FX.Scripts.System
 
             if (System.LoopCount >= LoopCount)
             {
-                System.ExecutionState = FXExecutionState.InactiveClear;
+                System.ExecutionState = FXExecutionState.Inactive;
             }
         }
     }

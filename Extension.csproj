@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -55,6 +55,7 @@
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
+    <Compile Include="FX\Definitions\Color.cs" />
     <Compile Include="FX\FXDependency.cs" />
     <Compile Include="FX\Definitions\FXEnum.cs" />
     <Compile Include="FX\Definitions\Vector.cs" />
@@ -69,10 +70,15 @@
     <Compile Include="FX\FXScript.cs" />
     <Compile Include="FX\FXSpawn.cs" />
     <Compile Include="FX\FXSystem.cs" />
+    <Compile Include="FX\Parameters\FXDynamicParameter.cs" />
+    <Compile Include="FX\Parameters\FXLinkParameter.cs" />
+    <Compile Include="FX\Parameters\FXRandomRangeFloat.cs" />
     <Compile Include="FX\Renders\FXRibbonRenderer.cs" />
     <Compile Include="FX\Scripts\Emitter\FXEmitterState.cs" />
     <Compile Include="FX\Scripts\Emitter\FXSpawnBurstInstantaneous.cs" />
     <Compile Include="FX\Scripts\Emitter\FXSpawnRate.cs" />
+    <Compile Include="FX\Scripts\Particle\FXAddVelocityFromPoint.cs" />
+    <Compile Include="FX\Scripts\Particle\FXBoxLocation.cs" />
     <Compile Include="FX\Scripts\Particle\FXCollision.cs" />
     <Compile Include="FX\Scripts\Particle\FXDrag.cs" />
     <Compile Include="FX\Scripts\Particle\FXGravityForce.cs" />
@@ -107,7 +113,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FX\Parameters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
