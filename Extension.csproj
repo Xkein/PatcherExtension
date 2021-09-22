@@ -67,6 +67,7 @@
     <Compile Include="Utilities\ExtensionReference.cs" />
     <Compile Include="Utilities\INIReader.cs" />
     <Compile Include="Utilities\IReloadable.cs" />
+    <Compile Include="Utilities\Map\CellEnumerators.cs" />
     <Compile Include="Utilities\PartialHelper.cs" />
     <Compile Include="Utilities\INIParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -82,6 +83,9 @@
       <Name>PatcherYRpp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
