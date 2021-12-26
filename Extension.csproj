@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decorators\BulletDecorative.cs" />
     <Compile Include="Decorators\DecoratorId.cs" />
     <Compile Include="Decorators\DecoratorMap.cs" />
     <Compile Include="Decorators\IDecorative.cs" />

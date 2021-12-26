@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Decorators;
 using Extension.Script;
 using Extension.Utilities;
 using PatcherYRpp;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 namespace Extension.Ext
 {
     [Serializable]
-    public partial class BulletExt : Extension<BulletClass>
+    public partial class BulletExt : Extension<BulletClass>, IDecorative, IDecorative<EventDecorator>, IDecorative<PairDecorator>
     {
         public static Container<BulletExt, BulletClass> ExtMap = new Container<BulletExt, BulletClass>("BulletClass");
 
@@ -49,6 +50,26 @@ namespace Extension.Ext
         {
             scriptable = new Lazy<BulletScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as BulletScriptable);
         }
+
+        DecoratorMap decoratorMap = new DecoratorMap();
+
+        public TDecorator CreateDecorator<TDecorator>(DecoratorId id, string description, params object[] parameters) where TDecorator : Decorator
+        {
+            TDecorator decorator = decoratorMap.CreateDecorator<TDecorator>(id, description, parameters);
+            decorator.Decorative = this;
+            return decorator;
+        }
+
+        public Decorator Get(DecoratorId id) => decoratorMap.Get(id);
+
+        public void Remove(DecoratorId id) => decoratorMap.Remove(id);
+
+        public void Remove(Decorator decorator) => decoratorMap.Remove(decorator);
+
+        IEnumerable<EventDecorator> IDecorative<EventDecorator>.GetDecorators() => decoratorMap.GetEventDecorators();
+
+        IEnumerable<PairDecorator> IDecorative<PairDecorator>.GetDecorators() => decoratorMap.GetPairDecorators();
+
 
         public override void SaveToStream(IStream stream)
         {
