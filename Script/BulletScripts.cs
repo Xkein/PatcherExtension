@@ -12,7 +12,7 @@ namespace Extension.Script
     public partial class ScriptManager
     {
         //[Hook(HookType.AresHook, Address = 0x4666F7, Size = 6)]
-        static public unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
+        public static unsafe UInt32 BulletClass_Update_Script(REGISTERS* R)
         {
             Pointer<BulletClass> pBullet = (IntPtr)R->EBP;
 
@@ -21,5 +21,6 @@ namespace Extension.Script
 
             return 0;
         }
+
     }
 }

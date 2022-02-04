@@ -12,7 +12,7 @@ namespace Extension.Script
     public partial class ScriptManager
     {
         //[Hook(HookType.AresHook, Address = 0x6F9E50, Size = 5)]
-        static public unsafe UInt32 TechnoClass_Update_Script(REGISTERS* R)
+        public static unsafe UInt32 TechnoClass_Update_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ESI;
 
@@ -22,7 +22,7 @@ namespace Extension.Script
             return 0;
         }
         //[Hook(HookType.AresHook, Address = 0x6F6CA0, Size = 7)]
-        static public unsafe UInt32 TechnoClass_Put_Script(REGISTERS* R)
+        public static unsafe UInt32 TechnoClass_Put_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
             var pCoord = R->Stack<Pointer<CoordStruct>>(0x4);
@@ -34,7 +34,7 @@ namespace Extension.Script
             return 0;
         }
         //[Hook(HookType.AresHook, Address = 0x6F6AC0, Size = 5)]
-        static public unsafe UInt32 TechnoClass_Remove_Script(REGISTERS* R)
+        public static unsafe UInt32 TechnoClass_Remove_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
 
@@ -44,7 +44,7 @@ namespace Extension.Script
             return 0;
         }
         //[Hook(HookType.AresHook, Address = 0x701900, Size = 6)]
-        static public unsafe UInt32 TechnoClass_ReceiveDamage_Script(REGISTERS* R)
+        public static unsafe UInt32 TechnoClass_ReceiveDamage_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
             var pDamage = R->Stack<Pointer<int>>(0x4);
@@ -61,7 +61,7 @@ namespace Extension.Script
             return 0;
         }
         //[Hook(HookType.AresHook, Address = 0x6FDD50, Size = 6)]
-        static public unsafe UInt32 TechnoClass_Fire_Script(REGISTERS* R)
+        public static unsafe UInt32 TechnoClass_Fire_Script(REGISTERS* R)
         {
             Pointer<TechnoClass> pTechno = (IntPtr)R->ECX;
             var pTarget = R->Stack<Pointer<AbstractClass>>(0x4);
