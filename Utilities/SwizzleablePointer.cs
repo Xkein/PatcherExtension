@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
@@ -13,7 +14,12 @@ namespace Extension.Utilities
     public struct SwizzleablePointer<T> : ISerializable
     {
         private PointerHandle<T> handle;
-        public ref Pointer<T> Pointer { get => ref handle.Pointer; }
+        public ref Pointer<T> Pointer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref handle.Pointer;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SwizzleablePointer(Pointer<T> ptr)
         {
             handle = new PointerHandle<T>(ptr);
@@ -31,11 +37,30 @@ namespace Extension.Utilities
             SwizzleManagerClass.Instance.Swizzle(ref Pointer);
         }
 
-        public ref T Ref { get => ref Pointer.Ref; }
-        public T Data { get => Pointer.Ref; set => Pointer.Ref = value; }
-        public ref T this[int index] { get => ref Pointer[index]; }
+        public ref T Ref
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref Pointer.Ref;
+        }
+        public T Data
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Pointer.Ref;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => Pointer.Ref = value;
+        }
+        public ref T this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref Pointer[index];
+        }
 
-        public bool IsNull { get => Pointer == Pointer<T>.Zero; }
+        public bool IsNull
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Pointer == Pointer<T>.Zero;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Pointer<T>(SwizzleablePointer<T> obj) => obj.Pointer;
     }
 }
