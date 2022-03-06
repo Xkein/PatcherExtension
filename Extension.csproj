@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -49,6 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\ComponentManager.cs" />
+    <Compile Include="Components\ExtComponent.cs" />
+    <Compile Include="Components\Transform.cs" />
     <Compile Include="Decorators\BulletDecorative.cs" />
     <Compile Include="Decorators\DecoratorId.cs" />
     <Compile Include="Decorators\DecoratorMap.cs" />
@@ -58,6 +63,7 @@
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />
     <Compile Include="Ext\Container.cs" />
+    <Compile Include="Components\IHaveComponent.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
     <Compile Include="Script\BulletScripts.cs" />
     <Compile Include="Script\Script.cs" />
