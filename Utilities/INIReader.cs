@@ -1,4 +1,4 @@
-﻿using Extension.Script;
+using Extension.Script;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -22,9 +22,9 @@ namespace Extension.Utilities
             parser = new INI_EX(pINI);
         }
 
-        //public T Read<T>(string section, string key)
+        //public bool Read<T>(string section, string key, ref T buffer)
         //{
-        //    T buffer = default;
+        //    Pointer<T> pOutValue = Pointer<T>.AsPointer(ref buffer);
 
         //    switch (buffer)
         //    {
@@ -34,17 +34,25 @@ namespace Extension.Utilities
         //        case byte:
         //        case float:
         //        case double:
-        //            return ReadNormal<T>(section, key);
+        //            return ReadNormal<T>(section, key, ref buffer);
         //        case Pointer<SuperWeaponTypeClass>:
-        //            return ReadSuperWeapon(section, key);
+        //            return ReadSuperWeapon(section, key, ref pOutValue.Convert<Pointer<SuperWeaponTypeClass>>().Ref);
         //        default:
-        //            break;
+        //            return false;
         //    }
         //}
 
         public bool ReadNormal<T>(string section, string key, ref T buffer)
         {
             return parser.Read(section, key, ref buffer);
+        }
+        public bool ReadArray<T>(string section, string key, ref T[] buffer)
+        {
+            return parser.ReadArray(section, key, ref buffer);
+        }
+        public bool ReadList<T>(string section, string key, ref List<T> buffer)
+        {
+            return parser.ReadList(section, key, ref buffer);
         }
 
         public bool ReadSuperWeapon(string section, string key, ref Pointer<SuperWeaponTypeClass> buffer)
