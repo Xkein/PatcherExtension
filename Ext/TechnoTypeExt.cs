@@ -19,8 +19,7 @@ namespace Extension.Ext
     {
         public static Container<TechnoTypeExt, TechnoTypeClass> ExtMap = new Container<TechnoTypeExt, TechnoTypeClass>("TechnoTypeClass");
 
-        [NonSerialized]
-        public TechnoScript Script;
+        public List<Script.Script> Scripts;
 
         public TechnoTypeExt(Pointer<TechnoTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -33,21 +32,16 @@ namespace Extension.Ext
             INIReader reader = new INIReader(exINI);
             string section = OwnerObject.Ref.Base.Base.ID;
 
-            reader.ReadScript(section, "Script", ref Script);
+            reader.ReadScripts(section, "Scripts", ref Scripts);
         }
 
         public override void SaveToStream(IStream stream)
         {
             base.SaveToStream(stream);
-
-            stream.WriteObject(Script?.Name);
         }
         public override void LoadFromStream(IStream stream)
         {
             base.LoadFromStream(stream);
-
-            stream.ReadObject(out string scriptName);
-            Script = ScriptManager.GetScript<TechnoScript>(scriptName);
         }
 
         //public override void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -1,4 +1,5 @@
 ﻿using DynamicPatcher;
+using Extension.Components;
 using Extension.Decorators;
 using Extension.Script;
 using Extension.Utilities;
@@ -15,22 +16,9 @@ using System.Threading.Tasks;
 namespace Extension.Ext
 {
     [Serializable]
-    public partial class TechnoExt : Extension<TechnoClass>, IDecorative, IDecorative<EventDecorator>, IDecorative<PairDecorator>
+    public partial class TechnoExt : Extension<TechnoClass>, IHaveComponent, IDecorative, IDecorative<EventDecorator>, IDecorative<PairDecorator>
     {
         public static Container<TechnoExt, TechnoClass> ExtMap = new Container<TechnoExt, TechnoClass>("TechnoClass");
-
-        internal Lazy<TechnoScriptable> scriptable;
-        public TechnoScriptable Scriptable
-        {
-            get
-            {
-                if (scriptable.IsValueCreated || Type.Script != null)
-                {
-                    return scriptable.Value;
-                }
-                return null;
-            }
-        }
 
         ExtensionReference<TechnoTypeExt> type;
         public TechnoTypeExt Type
@@ -46,9 +34,13 @@ namespace Extension.Ext
             }
         }
 
+        private ExtComponent<TechnoExt> _extComponent;
+        public Component AttachedComponent => _extComponent.GetEnsureAwaked();
+
         public TechnoExt(Pointer<TechnoClass> OwnerObject) : base(OwnerObject)
         {
-            scriptable = new Lazy<TechnoScriptable>(() => ScriptManager.GetScriptable(Type.Script, this) as TechnoScriptable);
+            _extComponent = new ExtComponent<TechnoExt>(this, 0, "TechnoExt root component");
+            _extComponent.OnAwake += () => ScriptManager.CreateScriptComponents(Type.Scripts, _extComponent, this);
         }
 
         DecoratorMap decoratorMap = new DecoratorMap();
@@ -90,13 +82,13 @@ namespace Extension.Ext
         public override void SaveToStream(IStream stream)
         {
             base.SaveToStream(stream);
-            Scriptable?.SaveToStream(stream);
+            _extComponent.Foreach(c => c.SaveToStream(stream));
         }
 
         public override void LoadFromStream(IStream stream)
         {
             base.LoadFromStream(stream);
-            Scriptable?.LoadFromStream(stream);
+            _extComponent.Foreach(c => c.LoadFromStream(stream));
         }
 
         //[Hook(HookType.AresHook, Address = 0x6F3260, Size = 5)]

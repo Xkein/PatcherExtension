@@ -31,15 +31,13 @@ namespace Extension.Script
     }
 
     [Serializable]
-    public abstract class Scriptable<T> : IScriptable
+    public abstract class Scriptable<T> : ScriptComponent, IScriptable
     {
         public T Owner { get; protected set; }
-        public Scriptable(T owner)
+        public Scriptable(T owner) : base()
         {
             Owner = owner;
         }
-        public virtual void SaveToStream(IStream stream) { }
-        public virtual void LoadFromStream(IStream stream) { }
     }
 
     [Serializable]
@@ -49,7 +47,6 @@ namespace Extension.Script
         {
         }
 
-        public virtual void OnUpdate() { }
         public virtual void OnPut(CoordStruct coord, Direction faceDir) { }
         public virtual void OnRemove() { }
         public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
@@ -66,7 +63,6 @@ namespace Extension.Script
         {
         }
 
-        public virtual void OnUpdate() { }
         public virtual void OnPut(CoordStruct coord, Direction faceDir) { }
         public virtual void OnRemove() { }
         public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,

@@ -1,4 +1,4 @@
-using Extension.Script;
+﻿using Extension.Script;
 using PatcherYRpp;
 using System;
 using System.Collections.Generic;
@@ -66,12 +66,12 @@ namespace Extension.Utilities
             return false;
         }
 
-        public bool ReadScript<TScript>(string section, string key, ref TScript buffer) where TScript : Script.Script
+        public bool ReadScripts(string section, string key, ref List<Script.Script> buffer)
         {
-            string val = default;
-            if (ReadNormal(section, key, ref val))
+            List<string> list = new List<string>();
+            if (ReadList(section, key, ref list))
             {
-                buffer = ScriptManager.GetScript<TScript>(val);
+                buffer = ScriptManager.GetScripts(list);
                 return true;
             }
             return false;

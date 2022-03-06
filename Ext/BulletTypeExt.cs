@@ -18,8 +18,7 @@ namespace Extension.Ext
     {
         public static Container<BulletTypeExt, BulletTypeClass> ExtMap = new Container<BulletTypeExt, BulletTypeClass>("BulletTypeClass");
 
-        [NonSerialized]
-        public BulletScript Script;
+        public List<Script.Script> Scripts;
 
         public BulletTypeExt(Pointer<BulletTypeClass> OwnerObject) : base(OwnerObject)
         {
@@ -31,21 +30,16 @@ namespace Extension.Ext
             INIReader reader = new INIReader(pINI);
             string section = OwnerObject.Ref.Base.Base.ID;
 
-            reader.ReadScript(section, "Script", ref Script);
+            reader.ReadScripts(section, "Scripts", ref Scripts);
         }
 
         public override void SaveToStream(IStream stream)
         {
             base.SaveToStream(stream);
-
-            stream.WriteObject(Script?.Name);
         }
         public override void LoadFromStream(IStream stream)
         {
             base.LoadFromStream(stream);
-
-            stream.ReadObject(out string scriptName);
-            Script = ScriptManager.GetScript<BulletScript>(scriptName);
         }
 
         //[Hook(HookType.AresHook, Address = 0x46BDD9, Size = 5)]

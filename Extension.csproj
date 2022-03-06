@@ -65,10 +65,9 @@
     <Compile Include="Ext\Container.cs" />
     <Compile Include="Components\IHaveComponent.cs" />
     <Compile Include="MyExtension\MyTechnoExt.cs" />
-    <Compile Include="Script\BulletScripts.cs" />
     <Compile Include="Script\Script.cs" />
     <Compile Include="Script\Scriptable.cs" />
-    <Compile Include="Script\TechnoScripts.cs" />
+    <Compile Include="Script\ScriptComponent.cs" />
     <Compile Include="Utilities\ContainerHelper.cs" />
     <Compile Include="Decorators\Decorator.cs" />
     <Compile Include="Utilities\ExtensionReference.cs" />
