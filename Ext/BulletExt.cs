@@ -1,4 +1,4 @@
-using DynamicPatcher;
+﻿using DynamicPatcher;
 using Extension.Components;
 using Extension.Decorators;
 using Extension.Script;
@@ -36,12 +36,15 @@ namespace Extension.Ext
 
         private ExtComponent<BulletExt> _extComponent;
         private DecoratorComponent _decoratorComponent;
+        public ExtComponent<BulletExt> ExtComponent => _extComponent.GetEnsureAwaked();
         public DecoratorComponent DecoratorComponent => _decoratorComponent;
+        public Component AttachedComponent => ExtComponent;
 
         public BulletExt(Pointer<BulletClass> OwnerObject) : base(OwnerObject)
         {
             _extComponent = new ExtComponent<BulletExt>(this, 0, "BulletExt root component");
             _decoratorComponent = new DecoratorComponent();
+            _extComponent.OnAwake += () => ScriptManager.CreateScriptableTo(_extComponent, Type.Scripts, this);
             _extComponent.OnAwake += () => _decoratorComponent.AttachToComponent(_extComponent);
         }
 

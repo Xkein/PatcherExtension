@@ -1,4 +1,5 @@
 ﻿using Extension.Ext;
+using Extension.Script;
 using Extension.Utilities;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,20 @@ namespace Extension.Components
                 Awake();
 
             return this;
+        }
+
+        public void CreateScriptComponent<T>(int id, string description, params object[] parameters) where T : Scriptable<TExt>
+        {
+            var script = ScriptManager.GetScript(typeof(T).Name);
+            var scriptComponent = ScriptManager.CreateScriptable<T>(script, parameters);
+            scriptComponent.ID = id;
+            scriptComponent.Name = description;
+
+            scriptComponent.AttachToComponent(this);
+        }
+        public void CreateScriptComponent<T>(string description, params object[] parameters) where T : Scriptable<TExt>
+        {
+            CreateScriptComponent<T>(NO_ID, description, parameters);
         }
 
         bool _awaked = false;

@@ -99,26 +99,38 @@ namespace Extension.Script
             return scripts;
         }
 
-        public static void CreateScriptComponents<T>(IEnumerable<Script> scripts, Component root, T owner)
+        public static void CreateScriptableTo<T>(Component root, IEnumerable<Script> scripts, T owner)
         {
             if (scripts == null)
                 return;
 
-            var components = scripts.Select(script => GetScriptable(script, owner));
-            foreach (var script in components)
+            foreach (var script in scripts)
             {
-                script.AttachToComponent(root);
+                CreateScriptableTo(root, script, owner);
             }
         }
-
-        public static Scriptable<T> GetScriptable<T>(Script script, T owner)
+        public static Scriptable<T> CreateScriptableTo<T>(Component root, Script script, T owner)
         {
             if (script == null)
                 return null;
 
-            var scriptable = Activator.CreateInstance(script.ScriptableType, owner) as Scriptable<T>;
+            var scriptComponent = CreateScriptable(script, owner);
+            scriptComponent.AttachToComponent(root);
+            return scriptComponent;
+        }
+        public static TScriptable CreateScriptable<TScriptable>(Script script, params object[] parameters) where TScriptable : ScriptComponent
+        {
+            if (script == null)
+                return null;
+
+            var scriptable = Activator.CreateInstance(script.ScriptableType, parameters) as TScriptable;
             scriptable.Script = script;
             return scriptable;
+        }
+
+        public static Scriptable<T> CreateScriptable<T>(Script script, T owner)
+        {
+            return CreateScriptable<Scriptable<T>>(script, owner);
         }
 
         private static Type[] FindScriptTypes(Assembly assembly)
@@ -207,7 +219,7 @@ namespace Extension.Script
                                 component.DetachFromParent();
                             }
                             var scripts = components.Select(c => c.Script);
-                            CreateScriptComponents(scripts, root, ext);
+                            CreateScriptableTo(root, scripts, ext);
                         }
                     }
                     ref var technoArray = ref TechnoClass.Array;
