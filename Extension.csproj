@@ -55,6 +55,7 @@
     <Compile Include="Components\ExtComponent.cs" />
     <Compile Include="Components\Transform.cs" />
     <Compile Include="Decorators\BulletDecorative.cs" />
+    <Compile Include="Decorators\DecoratorComponent.cs" />
     <Compile Include="Decorators\DecoratorId.cs" />
     <Compile Include="Decorators\DecoratorMap.cs" />
     <Compile Include="Decorators\IDecorative.cs" />

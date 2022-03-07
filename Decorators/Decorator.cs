@@ -49,14 +49,4 @@ namespace Extension.Decorators
         private ValueTuple<TKey, TValue> pair;
     }
 
-    // simple version
-    [Serializable]
-    public abstract class EventDecorator : Decorator
-    {
-        public virtual void OnUpdate() { }
-        public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
-            Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
-        { }
-        public virtual void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex) { }
-    }
 }

@@ -1,4 +1,4 @@
-﻿using DynamicPatcher;
+using DynamicPatcher;
 using Extension.Components;
 using Extension.Decorators;
 using Extension.Script;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace Extension.Ext
 {
     [Serializable]
-    public partial class BulletExt : Extension<BulletClass>, IHaveComponent, IDecorative, IDecorative<EventDecorator>, IDecorative<PairDecorator>
+    public partial class BulletExt : Extension<BulletClass>, IHaveComponent
     {
         public static Container<BulletExt, BulletClass> ExtMap = new Container<BulletExt, BulletClass>("BulletClass");
 
@@ -35,33 +35,15 @@ namespace Extension.Ext
         }
 
         private ExtComponent<BulletExt> _extComponent;
-        public Component AttachedComponent => _extComponent.GetEnsureAwaked();
+        private DecoratorComponent _decoratorComponent;
+        public DecoratorComponent DecoratorComponent => _decoratorComponent;
 
         public BulletExt(Pointer<BulletClass> OwnerObject) : base(OwnerObject)
         {
             _extComponent = new ExtComponent<BulletExt>(this, 0, "BulletExt root component");
-            _extComponent.OnAwake += () => ScriptManager.CreateScriptComponents(Type.Scripts, _extComponent, this);
+            _decoratorComponent = new DecoratorComponent();
+            _extComponent.OnAwake += () => _decoratorComponent.AttachToComponent(_extComponent);
         }
-
-        DecoratorMap decoratorMap = new DecoratorMap();
-
-        public TDecorator CreateDecorator<TDecorator>(DecoratorId id, string description, params object[] parameters) where TDecorator : Decorator
-        {
-            TDecorator decorator = decoratorMap.CreateDecorator<TDecorator>(id, description, parameters);
-            decorator.Decorative = this;
-            return decorator;
-        }
-
-        public Decorator Get(DecoratorId id) => decoratorMap.Get(id);
-
-        public void Remove(DecoratorId id) => decoratorMap.Remove(id);
-
-        public void Remove(Decorator decorator) => decoratorMap.Remove(decorator);
-
-        IEnumerable<EventDecorator> IDecorative<EventDecorator>.GetDecorators() => decoratorMap.GetEventDecorators();
-
-        IEnumerable<PairDecorator> IDecorative<PairDecorator>.GetDecorators() => decoratorMap.GetPairDecorators();
-
 
         public override void SaveToStream(IStream stream)
         {
