@@ -54,12 +54,10 @@
     <Compile Include="Components\ComponentManager.cs" />
     <Compile Include="Components\ExtComponent.cs" />
     <Compile Include="Components\Transform.cs" />
-    <Compile Include="Decorators\BulletDecorative.cs" />
     <Compile Include="Decorators\DecoratorComponent.cs" />
     <Compile Include="Decorators\DecoratorId.cs" />
     <Compile Include="Decorators\DecoratorMap.cs" />
     <Compile Include="Decorators\IDecorative.cs" />
-    <Compile Include="Decorators\TechnoDecorative.cs" />
     <Compile Include="Ext\AnimTypeExt.cs" />
     <Compile Include="Ext\BulletExt.cs" />
     <Compile Include="Ext\BulletTypeExt.cs" />

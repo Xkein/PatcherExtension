@@ -36,7 +36,7 @@ namespace Extension.Ext
 
         private ExtComponent<TechnoExt> _extComponent;
         private DecoratorComponent _decoratorComponent;
-        public ExtComponent<TechnoExt> ExtComponent => _extComponent.GetEnsureAwaked();
+        public ExtComponent<TechnoExt> ExtComponent => _extComponent.GetAwaked();
         public DecoratorComponent DecoratorComponent => _decoratorComponent;
         public Component AttachedComponent => ExtComponent;
 

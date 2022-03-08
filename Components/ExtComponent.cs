@@ -16,6 +16,9 @@ namespace Extension.Components
         {
             _owner = owner;
             Name = name;
+
+            _unstartedComponents = new List<Component>();
+            _unstartedComponents.Add(this);
         }
 
         public TExt Owner => _owner;
@@ -25,19 +28,35 @@ namespace Extension.Components
         {
             base.Awake();
 
-            _awaked = true;
             OnAwake?.Invoke();
-            ForeachChild(c => c.Awake());
+        }
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+
+            if (_unstartedComponents.Count > 0)
+            {
+                Component.ForeachComponents(_unstartedComponents, c => c.EnsureStarted());
+                _unstartedComponents.Clear();
+            }
+        }
+
+        protected override void AddComponent(Component component)
+        {
+            base.AddComponent(component);
+
+            component.EnsureAwaked();
+            _unstartedComponents.Add(component);
         }
 
         /// <summary>
         /// return myself and ensure awaked
         /// </summary>
         /// <returns></returns>
-        public ExtComponent<TExt> GetEnsureAwaked()
+        public ExtComponent<TExt> GetAwaked()
         {
-            if (!_awaked)
-                Awake();
+            EnsureAwaked();
 
             return this;
         }
@@ -56,7 +75,7 @@ namespace Extension.Components
             CreateScriptComponent<T>(NO_ID, description, parameters);
         }
 
-        bool _awaked = false;
         ExtensionReference<TExt> _owner;
+        List<Component> _unstartedComponents;
     }
 }

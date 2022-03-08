@@ -36,7 +36,7 @@ namespace Extension.Ext
 
         private ExtComponent<BulletExt> _extComponent;
         private DecoratorComponent _decoratorComponent;
-        public ExtComponent<BulletExt> ExtComponent => _extComponent.GetEnsureAwaked();
+        public ExtComponent<BulletExt> ExtComponent => _extComponent.GetAwaked();
         public DecoratorComponent DecoratorComponent => _decoratorComponent;
         public Component AttachedComponent => ExtComponent;
 

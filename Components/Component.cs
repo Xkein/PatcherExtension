@@ -257,11 +257,11 @@ namespace Extension.Components
 
 
 
-        protected void AddComponent(Component component)
+        protected virtual void AddComponent(Component component)
         {
             _children.Add(component);
         }
-        protected void RemoveComponent(Component component)
+        protected virtual void RemoveComponent(Component component)
         {
             _children.Remove(component);
         }
@@ -356,15 +356,40 @@ namespace Extension.Components
             root.ForeachChild(action);
         }
 
+        /// <summary>
+        /// destroy the component and call OnDestroy
+        /// </summary>
+        /// <param name="component"></param>
         public static void Destroy(Component component)
         {
             component.Foreach(c => c.OnDestroy());
             component.DetachFromParent();
         }
 
+        public void EnsureAwaked()
+        {
+            if (!_awaked)
+            {
+                Awake();
+                _awaked = true;
+            }
+        }
+
+        public void EnsureStarted()
+        {
+            if (!_started)
+            {
+                Start();
+                _started = true;
+            }
+        }
+
         protected Transform _transform;
         [NonSerialized] // set back in OnDeserialized
         protected Component _parent = null;
         protected List<Component> _children = new List<Component>();
+
+        private bool _awaked = false;
+        private bool _started = false;
     }
 }
