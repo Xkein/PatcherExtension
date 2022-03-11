@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +14,17 @@ namespace Extension.Decorators
         public DecoratorMap() : base()
         {
             pairs = new EnumerableBuffer<PairDecorator>(this);
+        }
+
+        protected DecoratorMap(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand,
+            Flags = SecurityPermissionFlag.SerializationFormatter)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
         }
 
         public TDecorator CreateDecorator<TDecorator>(DecoratorId id, string description, params object[] parameters) where TDecorator : Decorator

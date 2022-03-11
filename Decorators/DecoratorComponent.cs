@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Extension.Decorators
 {
+    [Serializable]
     public class DecoratorComponent : Component, IDecorative, IDecorative<PairDecorator>
     {
         public DecoratorComponent() : base(true)
@@ -34,7 +35,7 @@ namespace Extension.Decorators
         public void Remove(Decorator decorator) => decoratorMap.Remove(decorator);
 
         IEnumerable<PairDecorator> IDecorative<PairDecorator>.GetDecorators() => GetPairDecorators();
-        IEnumerable<PairDecorator>  GetPairDecorators() => decoratorMap.GetPairDecorators();
+        IEnumerable<PairDecorator> GetPairDecorators() => decoratorMap.GetPairDecorators();
 
         public TDecorator Get<TDecorator>(DecoratorId id) where TDecorator : Decorator
         {
