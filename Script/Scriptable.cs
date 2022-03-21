@@ -25,6 +25,10 @@ namespace Extension.Script
     {
         public void OnFire(Pointer<AbstractClass> pTarget, int weaponIndex);
     }
+    public interface IBulletScriptable : IObjectScriptable
+    {
+        public void OnDetonate(Pointer<CoordStruct> pCoords);
+    }
 
     public interface IScriptable : IReloadable
     {
@@ -57,7 +61,7 @@ namespace Extension.Script
     }
 
     [Serializable]
-    public class BulletScriptable : Scriptable<BulletExt>, IObjectScriptable
+    public class BulletScriptable : Scriptable<BulletExt>, IBulletScriptable
     {
         public BulletScriptable(BulletExt owner) : base(owner)
         {
@@ -68,5 +72,7 @@ namespace Extension.Script
         public virtual void OnReceiveDamage(Pointer<int> pDamage, int DistanceFromEpicenter, Pointer<WarheadTypeClass> pWH,
             Pointer<ObjectClass> pAttacker, bool IgnoreDefenses, bool PreventPassengerEscape, Pointer<HouseClass> pAttackingHouse)
         { }
+
+        public virtual void OnDetonate(Pointer<CoordStruct> pCoords) { }
     }
 }
