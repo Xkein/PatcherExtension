@@ -53,6 +53,7 @@
     <Compile Include="Components\Component.cs" />
     <Compile Include="Components\ComponentManager.cs" />
     <Compile Include="Components\ExtComponent.cs" />
+    <Compile Include="Components\INIComponent.cs" />
     <Compile Include="Components\Transform.cs" />
     <Compile Include="Decorators\DecoratorComponent.cs" />
     <Compile Include="Decorators\DecoratorId.cs" />
